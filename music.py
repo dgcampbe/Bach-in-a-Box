@@ -1,4 +1,4 @@
-#This program should be able to write music. Quality is not assured.
+#This program should be able to write music. Quality is not assured. Now on Github :)
 #I might try integrating this with Alda
 #I am very sure this violates every rule of programming best practices
 
