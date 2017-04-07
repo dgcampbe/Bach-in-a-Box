@@ -1,6 +1,4 @@
-#This program should be able to write music. Quality is not assured. Now on Github :)
-#I might try integrating this with Alda
-#I am very sure this violates every rule of programming best practices
+#This program should be able to write music. Quality is not assured. Now on Github :). I will try integrating this with Alda. I am very sure this violates every rule of programming best practices
 
 #import random module for some randomness in the music
 import random
@@ -11,27 +9,23 @@ import os.path
 
 #some variables that need to be defined
 savepath = "C:/PythonMusic/textfiles/"
-
 guisong = 0
-#lists that will be used eventually
 Note_list = ["A","B","C","D","E","F","G"]
 Octaves = [1,2,3,4,5,6]
 
-
-#Getting all the GUI related stuff out of the way for later
-#I need to have it defined before I call it in main(), because no forward declaration in python :(
+#Getting all the GUI related stuff out of the way for later. I need to have it defined before I call it in main(), because no forward declaration in Python :(
 
 class Application(Frame):
-    #Application class, where the GUI magic happens
 
+    #Application class, where the GUI magic happens
     def __init__(self, master):
 
+        #maybe create a variable to keep track of different guisongs like:
+        #self.guisongnum = 1
+        #then increment it as guisongs are created
         super(Application, self).__init__(master)
-
         self.grid()
-
         self.create_widgets()
-
         self.buttonclick = 0
 
     def create_widgets(self):
@@ -50,27 +44,26 @@ class Application(Frame):
         self.musiclabel2.grid(row = 1, column = 0, columnspan = 2, sticky = W)
 
     def create_buttons(self):
-
                 
         self.musicbutton1 = Button(self)
-        self.musicbutton1.grid(row = 5, column = 0, columnspan = 1, sticky = E)
-        self.musicbutton1.configure(text = "Test button")
+        self.musicbutton1.grid(row = 5, column = 1, columnspan = 1, sticky = W)
+        self.musicbutton1.configure(text = "Save to file.")
         
-
         self.musicbutton2 = Button(self)
         self.musicbutton2.grid(row = 1, column = 4, sticky = W)
         self.musicbutton2.configure(text = "Submit")
 
         self.musicbutton3 = Button(self)
-        self.musicbutton3.grid(row = 6, column = 0, columnspan = 1, sticky = E)
+        self.musicbutton3.grid(row = 5, column = 0, columnspan = 1, sticky = W)
         self.musicbutton3.configure(text = "Usefull button.")
               
-        #remember to change this value as needed
-
+        #remember to change this value as needed (headache avoided)
         self.musicbutton2.configure(command = self.submit)
-        self.musicbutton1.configure(command = self.update)
+        self.musicbutton1.configure(command = self.savetofile)
+        #I think I need to create a global variable called guisong and then edit the global version here to people able to use this method's version elseware
         global guisong
         guisong = Song("guisong", "4", "3", "2")
+        #idk why the following commented line doesn't work, so I made a work around
         #self.musicbutton3.configure(command = self.puttextinbox(str(guisong), "False"))
         self.musicbutton3.configure(command = self.specialputinbox)
         
@@ -79,33 +72,32 @@ class Application(Frame):
         self.firstentry = Entry(self)
         self.firstentry.grid(row = 1, column = 2, columnspan = 2, sticky = W)
 
+        self.display = Text(self, width = 50, height = 10, wrap = WORD)
+        self.display.grid(row = 2, column = 0, columnspan = 5, sticky = W)
+        self.puttextinbox("This is where results will go. The console is more verbose for debugging.", "False")
 
-        self.display = Text(self, width = 20, height = 5, wrap = WORD)
-        self.display.grid(row = 2, column = 0, columnspan = 5, sticky = S)
-        #self.puttextinbox("kat", "False")
-
-        
     def specialputinbox(self):
 
         #stupid, but it works :P
-        #stupid and under construction
+        #This is the work around for the issue in self.create_buttons()
         #self.puttextinbox(str(guisong), "False")
         guisong.add_notes()
-        self.puttextinbox(str(guisong.notedictionary), "False")
+        #I need to fix this so the dictionary string isn't all weird memory addresses
+        #self.puttextinbox(str(guisong.notedictionary), "False")
+        self.puttextinbox(str(guisong.print_songlist("False")), "False")
     
     def create_checks(self):
         
         self.bool1 = BooleanVar()
         self.bool2 = BooleanVar()
         self.bool3 = BooleanVar()
-        
+        """        
         self.check1 = Checkbutton(self)
         self.check1.configure(variable = self.bool1)
         self.check1.configure(command = self.submit)
-        self.check1.grid(row = 3, column = 0, sticky = S)
-        #might want to not use a variable to save space idk.
-
-        
+        self.check1.grid(row = 4, column = 5, sticky = S)
+        #might want to not use a variable to save space idk
+        """
         
     def update(self):
 
@@ -120,15 +112,16 @@ class Application(Frame):
 
         if textboxstuff:
 
+            #moving this from the console to GUI would be good
             print("The Number of Notes is: " + textboxstuff)
             numberofnotes = textboxstuff
             guisong = Song("guisong", "5", "4", textboxstuff)
             print(guisong)
-
+            self.puttextinbox("Song of length " + str(textboxstuff) + " has been created. Press the other button to see the results here.", "False")
+            
         else:
 
             print("No Number provided.")
-
 
     def puttextinbox(self, putinbox, append):
 
@@ -139,35 +132,34 @@ class Application(Frame):
 
         else:
 
-            self.display.insert(0.0, putinbox) 
+            self.display.insert(0.0, putinbox)
 
+    def savetofile(self):
 
-#going to use pack and pack-forget to make an ever changing ui
-#I am going to rewrite the program to work with tkinter
+        #Going to work on this so that it can actually save to file
+        guisong.print_songlist("True")
 
-#Creates GUI from the Application class
+#I am going to rewrite the program to work with tkinter with pack and pack-forget to hide elements
+
 def GUI():
 
+    #Creates GUI from the Application class.
+    print("GUI started.")
     root = Tk()
     root.title("Python Music Program")
     root.geometry("600x400")
     app = Application(root)
-
-    
+  
     #Run mainloop
     root.mainloop()
 
-
-
-# some classes defined below
+#some classes defined below
 
 class Note(object):
 
-#    This is used to create a note that will being strung together to form music
-
+    #This is used to create a note that will being strung together to form music
     def __init__(self, name, letter, octave, sharp):
 
-        #will add ability to determine if part of song or something idk
         print("A new note has been created.")
         self.name = name
         self.letter = letter
@@ -182,7 +174,6 @@ class Note(object):
 
         if self.sharp == "True":
             rep += " sharp"
-
 
         else:
 
@@ -225,12 +216,9 @@ class Note(object):
 
             input("A note sharp state swap was attempted but an issue occurred and as a preventive measure, was halted. You should debug this.")
 
-#still need to connect note and song classes
-
 class Song(object):
 
-#    This is used to makes a groups of notes to create a song (or maybe just a single "voice" of a song)
-
+    #This is used to makes a groups of notes to create a song (or maybe just a single "voice" of a song)
     def __init__(self, name, speed, pitch, length):
 
         print("A new song has been created.")
@@ -245,14 +233,17 @@ class Song(object):
 
         rep = "song: "
         rep +=  "Name-" + str(self.name) + " " + "Speed-" + str(self.speed) + " " + "Pitch-" + str(self.pitch) + " " + "Length-" + str(self.length)
+
         if self.notedictionary:
             
             rep += " ------Note dictionary avalible."
+
         return rep
 
     def add_notes(self):
 
-        songlist = []
+        #maybe integrate the append_notes function by using an input that tells whether the dictionary should be overwritten or added to
+        self.songlist = []
         self.notedictionary = {}
 
         for i in range(int(self.length)):
@@ -264,48 +255,53 @@ class Song(object):
 
             if randomsharp == 1:
 
-                issharp = " sharp "
+                issharp = "+"
+            #testing a small change here for compatibility with Alda, still has a long way to go before it actually works
+            #This needs to be reworked to work more like most __str__ functions do by using the += thing and returning a value instead of creating a variable that is added onto other stuff
+            
+            else:
+
+                issharp = ""
+
+            self.notedictionary["note" + str(i)] = Note(str("note" + str(i)),str(randomnote),str(randomoctave), str(issharp))
+            randomnoteandoctave = str(randomnote) + str(randomoctave) + str(issharp)
+            self.songlist.append(str(randomnoteandoctave))
+
+        print("Notes added to song. Check text file for results.")
+        #write results to file
+        text_file_name = os.path.join(savepath, "testmusic.txt")
+        text_file = open(text_file_name, "w")
+        text_file.write("song: " + str(self.songlist))
+        text_file.close()
+
+    def print_songlist(self, console):
+
+        #work more like a __str__ should
+
+        if console == "True":
+            
+            print("song: " + str(self.songlist))
+            write = input("Write music above to file? y or n ")            
+
+            if write == "y":
+
+                filename = input("What should the text file be called? Do NOT include the .txt file extension")
+                text_file_name = os.path.join(savepath, str(filename) + ".txt")
+                text_file = open(text_file_name, "w")
+                text_file.write("song: " + str(self.songlist))
+                text_file.close()
+                print("Song written to " + filename + ".txt")
 
             else:
 
-                issharp = " not sharp "
-
-            self.notedictionary["note" + str(i)] = Note(str("note" + str(i)),str(randomnote),str(randomoctave), str(issharp))
-
-            randomnoteandoctave = str(randomnote) + str(randomoctave) + str(issharp)
-            songlist.append(str(randomnoteandoctave))
-
-        print("Notes added to song. Check text file for results.")
-        self.songlist = songlist
-
-        #write to file
-        text_file_name = os.path.join(savepath, "testmusic.txt")
-        text_file = open(text_file_name, "w")
-        #text_file = open("testmusic.txt", "w")
-        text_file.write("song: " + str(songlist))
-        text_file.close()
-
-    def print_songlist(self):
-
-        print("song: " + str(self.songlist))
-        write = input("Write music above to file? y or n ")
-
-        if write == "y":
-
-            filename = input("What should the text file be called? Do NOT include the .txt file extension")
-
-            text_file_name = os.path.join(savepath, str(filename) + ".txt")
-            text_file = open(text_file_name, "w")
-            #text_file = open( str(filename) + ".txt", "w")
-            #text_file.write("song: " + str(self.songlist))
-            text_file.close()
-
-            print("Song written to " + filename + ".txt")
+                print("Song not written.")
 
         else:
-
-            print("Song not written.")
-
+            
+            rep = "song: "
+            rep += str(self.songlist)
+            return rep
+            
     def append_notes(self, numofnotestoappend):
 
         if self.notedictionary and numofnotestoappend > 0:
@@ -327,7 +323,7 @@ class Song(object):
 
 class fugue(object):
 
-#   Not even close to done
+    #Not even close to done
     def __init__(self, name, subjectsong):
 
         print("A new fugue has been created")
@@ -348,12 +344,12 @@ class fugue(object):
 
 
 def main():
-#    main function where everything happens
 
+    #main function where everything happens
+    #gather some input (this will be moved to tkinter eventually)
     print("This program should be able to write music. Quality is not assured (quanity might, though). Work in progress.")
     lengthofsong = input("What length do you want? Default is fifty.")
     style = input("Please input a style (speed, length, pitch) of music: (this prompt doesn't do anything yet, just looks pretty.)")
-
 
     #testing to see how much of this stuff doesn't work
     notetest = Note("notetest","C","4","False")
@@ -378,18 +374,18 @@ def main():
         song1 = Song("song1",3,4,50)        
 
     song1.add_notes()
-    song1.print_songlist()
+    song1.print_songlist("True")
     print(song1)
     song1.append_notes(3)
     print(song1)
 
-    #testing with the fugue song that is being worked on
+    #testing with the fugue function that is being worked on
     fuguesong1 = Song("fuguesong1",3,4,8)
     testfugue1 = fugue("testfugue1", song1)
     print(testfugue1)
 
+    print(song1.print_songlist("False"))
     #Run GUI
-    print("GUI started.")
     GUI()
     
     input("Press enter to exit.")
