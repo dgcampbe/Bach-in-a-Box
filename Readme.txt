@@ -8,12 +8,14 @@ Right now it is only able to write random notes to a file and a GUI is in the wo
 
 I have been working on migrating to Linux so Linux-related things are in the works. I am working on making this program work in Linux.
 
-If for some reason the Linux version fails to work in Linux, trying a command called dos2unix can on it should work.
+I don't know how well tkinter of os.path work in Linux, I will do more research. This is mostly just for Windows for the time being though.
 
-Idk about other distros of Linux, but dos2unix is easy to get for Arch in the AUR.
+If for some reason the Linux version fails to work in Linux, try running dos2unix can on it.
 
-If you are using Windows, I think everything would just work.
+Idk about other distros of Linux, but the dos2unix package is easy to get for Arch in the AUR.
 
-A little new to Github :)
+I beleive that everything is working as fine as can be for Windows (excluding bugs in the program itself :P)
+
+Still need a way to recognize that E# is F, etc.
 
 I doubt anyone in the right mind would want to use this code for anything, but if you do feel free. :P
