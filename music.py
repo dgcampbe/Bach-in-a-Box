@@ -2,13 +2,23 @@
 
 #import random module for some randomness in the music
 import random
-#import tkinter for GUI
+#import tkinter for GUI (need to change this so that it doesn't import all)
 from tkinter import *
 #for file and folder dialogs
 from tkinter.filedialog import askdirectory
 from tkinter.filedialog import askopenfilename
 #for writing some files to a specified folder
 import os.path
+#Pygame is here!!!
+import pygame
+from pygame import midi
+#import livewires
+import time
+#Music21 module from MIT (absolutely amazing)
+import music21
+#A module I made for testing using pygame for playing MIDIs(included)
+import bach_aof
+import playmodule
 
 #some variables that need to be defined
 defaultsavepath = "C:/PythonMusic/textfiles/"
@@ -17,8 +27,6 @@ guisong = 0
 guisongdict = {}
 Note_list = ["A","B","C","D","E","F","G"]
 Octaves = [1,2,3,4,5,6]
-
-#Getting all the GUI related stuff out of the way for later. I need to have it defined before I call it in main(), because no forward declaration in Python :(
 
 class Application(Frame):
 
@@ -64,11 +72,16 @@ class Application(Frame):
         self.musicbutton3 = Button(self)
         self.musicbutton3.grid(row = 5, column = 0, columnspan = 1, sticky = W)
         self.musicbutton3.configure(text = "Display new song in textbox.")
+
+        self.musicbutton4 = Button(self)
+        self.musicbutton4.grid(row = 6, column = 5, columnspan = 1, sticky = W)
+        self.musicbutton4.configure(text = "Play song.")
               
         #remember to change this value as needed (headache avoided)
         self.musicbutton2.configure(command = self.submit)
         self.musicbutton1.configure(command = self.savetofile1)
         self.musicbutton3.configure(command = self.specialputinbox)
+        self.musicbutton4.configure(command = self.playguisong)
         
     def create_text(self):
 
@@ -152,6 +165,10 @@ class Application(Frame):
 
         guisongdict[self.guisongnum - 1].savesonglist(filename)
 
+    def playguisong(self):
+
+        playsong(guisongdict[self.guisongnum - 1].songlist, 1)
+
 #I am going to rewrite the program to work with tkinter with pack and pack-forget to hide elements (maybe a complete rewrite in node.js :P)
 
 def GUI():
@@ -180,14 +197,32 @@ class Note(object):
     #This is used to create a note that will being strung together to form music
     def __init__(self, name, letter, octave, sharp):
 
-        print("A new note has been created.")
         self.name = name
         self.letter = letter
         self.octave = octave
         self.sharp = sharp
-        print(self)
+        print("A new note has been created. " + str(self))
+
+        self.name2 = self.name + "music21"
+        self.notenamething = self.letter + self.octave
+        self.name2 = music21.pitch.Pitch(self.notenamething)
+        print("music21 test...." + str(self.name2.midi))
         
     def __str__(self):
+
+        rep = str(self.letter)
+
+        if self.sharp == "True":
+            
+            rep += "#" + str(self.octave)
+
+        else:
+            
+            rep += str(self.octave)
+            
+        return rep
+    
+    def printstring(self):
 
         rep = "note: "
         rep += self.name + " " + self.letter + self.octave
@@ -201,7 +236,7 @@ class Note(object):
 
         return rep
 
-    def changeoctave(self,numofoct):
+    def changeoctave(self, numofoct):
 
         try:
 
@@ -212,7 +247,7 @@ class Note(object):
 
             input("Error type 5 occured: Please Debug")
 
-    def changenote(self,newnote):
+    def changenote(self, newnote):
 
         if newnote in Note_list:
 
@@ -238,7 +273,7 @@ class Note(object):
 
 class Song(object):
 
-    #This is used to makes a groups of notes to create a song (or maybe just a single "voice" of a song)
+    #This is used to makes a groups of notes to create a song (or maybe just a single "voice" of a fugue)
     def __init__(self, name, speed, pitch, length):
 
         print("A new song has been created.")
@@ -264,6 +299,7 @@ class Song(object):
 
         self.songlist = []
         self.notedictionary = {}
+        
 
         for i in range(int(self.length)):
 
@@ -274,7 +310,7 @@ class Song(object):
 
             if randomsharp == 1:
 
-                issharp = "+"
+                issharp = "#"
             
             else:
 
@@ -320,14 +356,35 @@ class Song(object):
             
             print("Error type 11: Appending note to song failed.")
 
+    def transpose(self, semitones):
+
+        if self.notedictionary:
+
+            #this needs to figure out sharps so E# is not considerred different from F
+            print("Transpose function used on song " + self.name + ". Transposed " + str(semitones) + " semitones.")
+
+            for note in self.notedictionary:
+                
+                #idk how this is going to work
+                print("Note not transposed due to bad programming.")
+                
+        else:
+
+            print("Transpose function used on song " + self.name + ". Transposed " + str(semitones) + " semitones.")            
+
+    def changenotestolist(self, changelist):
+
+        print("this should work")
+    
 class fugue(object):
 
     #Not even close to done
-    def __init__(self, name, subjectsong):
+    def __init__(self, name, subjectsong, answers):
 
         print("A new fugue has been created.")
         self.name = name
         self.subjectsong = subjectsong
+        self.answercount = 0
 
     def __str__(self):
 
@@ -341,17 +398,54 @@ class fugue(object):
         #idk what to do here so here is a print function that portrays my feelings :P
         print("Counterpoint is hard.")
 
+    def createanswer(self, semitones):
+
+        #this is horrendously bad but it works for the short term
+        #I will change this so it works on for loops for each note in the song changing the corresponding notes in the answer
+        #or I will change it so that the Song class has the ability to change its notes in one method call
+        self.answer = Song("answer",self.subjectsong.speed, self.subjectsong.pitch, self.subjectsong.length)
+        print(self.subjectsong.print_songlist())
+        self.answer.add_notes()
+        self.answer.notedictionary = self.subjectsong.notedictionary
+        self.answer.songlist = self.subjectsong.songlist
+        print(self.answer.print_songlist())
+        self.answer.transpose(semitones)
+        self.answercount += 1
+
+    def createcountersubject(self):
+
+        #self.subjectsong
+        print("This program can't create a countersubject yet :(")
+      
+def playsong(songlistofsong, speed):
+
+    for note in songlistofsong:
+
+        music21note = music21.pitch.Pitch(note)
+        playmodule.playmidinote(music21note.midi, speed)
+
 def main():
-
-    #main function where everything happens. I am testing with the fugue class that is being worked on.
     
-    fuguesong1 = Song("fuguesong1",3,4,8)
-    testfugue1 = fugue("testfugue1", fuguesong1)
-    print(testfugue1)
+    #main function where everything happens. I am testing with the fugue class that is being worked on and using pygame to play MIDIs.
+    bach_test = input("Test bach_aof module (y/n)")
+    
+    if bach_test != "n":
+        
+        print("Tesitng.....\n")
+        bach_aof.miditest()
+        print("Test successful")
+        time.sleep(1)
+    
+    fuguesong1 = Song("fuguesong1", 3, 4, 8)
+    fuguesong1.add_notes()
+    testfugue1 = fugue("testfugue1", fuguesong1, 1)
+    testfugue1.createanswer(5)
 
+    #playsong(fuguesong1.songlist, 1)
+        
     #Run GUI
     GUI()
-    
+
     input("Press enter to exit.")
 
 #Run main
