@@ -2,8 +2,8 @@
 
 #import random module for some randomness in the music
 import random
-#import tkinter for GUI (need to change this so that it doesn't import all)
-from tkinter import *
+#import tkinter for GUI
+import tkinter as tk
 #for file and folder dialogs
 from tkinter.filedialog import askdirectory
 from tkinter.filedialog import askopenfilename
@@ -19,25 +19,29 @@ import music21
 #A module I made for testing using pygame for playing MIDIs(included)
 import bach_aof
 import playmodule
+from collections import OrderedDict
 
 #some variables that need to be defined
 defaultsavepath = "C:/PythonMusic/textfiles/"
-savepath = defaultsavepath
+globalsavepath = defaultsavepath
 guisong = 0
 guisongdict = {}
 Note_list = ["A","B","C","D","E","F","G"]
 Octaves = [1,2,3,4,5,6]
+Pitches = ["soprano", "mezzo-soprano", "alto", "tenor", "baritone", "bass"]
+Pitchdict = {"soprano": "C4-A5", "mezzo-soprano": "A3-F5", "alto": "F3-D5", "tenor": "B2-G4", "baritone": "G2-E4", "bass": "E2-C4"}
 
-class Application(Frame):
-
+class Application(tk.Frame):
+    
     #Application class, where the GUI magic happens
-    def __init__(self, master):
-
+    def __init__(self, parent, *args, **kwargs):
+        
+        tk.Frame.__init__(self, parent, *args, **kwargs)
         self.guisongnum = 1
-        super(Application, self).__init__(master)
         self.grid()
         self.create_widgets()
-        
+        guisongdict = OrderedDict()
+
     def create_widgets(self):
 
         self.create_text()
@@ -47,77 +51,64 @@ class Application(Frame):
 
     def create_labels(self):
 
-        self.musiclabel = Label(self, text = "This is a simple music program. Please Enjoy.")
-        self.musiclabel.grid(row = 0, column = 0, columnspan = 6, sticky = W)
+        self.musiclabel = tk.Label(self, text = "This is a simple music program. Please Enjoy.")
+        self.musiclabel.grid(row = 0, column = 0, columnspan = 6, sticky = tk.W)
 
-        self.musiclabel2 = Label(self, text = "Number of notes for the song: ")
-        self.musiclabel2.grid(row = 1, column = 0, columnspan = 2, sticky = W)
+        self.musiclabel2 = tk.Label(self, text = "Number of notes for the song: ")
+        self.musiclabel2.grid(row = 1, column = 0, columnspan = 2, sticky = tk.W)
 
-        self.musiclabel3 = Label(self, text = "Save location:")
-        self.musiclabel3.grid(row = 6, column = 0, columnspan = 2, sticky = W)
+        self.musiclabel3 = tk.Label(self, text = "Save location:")
+        self.musiclabel3.grid(row = 6, column = 0, columnspan = 2, sticky = tk.W)
 
-        self.musiclabel4 = Label(self, text = ".txt")
-        self.musiclabel4.grid(row = 6, column = 2, columnspan = 1, sticky = W)
+        self.musiclabel4 = tk.Label(self, text = ".txt")
+        self.musiclabel4.grid(row = 6, column = 2, columnspan = 1, sticky = tk.W)
 
     def create_buttons(self):
                 
-        self.musicbutton1 = Button(self)
-        self.musicbutton1.grid(row = 6, column = 3, columnspan = 1, sticky = W)
+        self.musicbutton1 = tk.Button(self)
+        self.musicbutton1.grid(row = 7, column = 0, columnspan = 1, sticky = tk.W)
         self.musicbutton1.configure(text = "Save to file.")
         
-        self.musicbutton2 = Button(self)
-        self.musicbutton2.grid(row = 1, column = 4, sticky = W)
+        self.musicbutton2 = tk.Button(self)
+        self.musicbutton2.grid(row = 1, column = 4, sticky = tk.W)
         self.musicbutton2.configure(text = "Submit")
 
-        self.musicbutton3 = Button(self)
-        self.musicbutton3.grid(row = 5, column = 0, columnspan = 1, sticky = W)
-        self.musicbutton3.configure(text = "Display new song in textbox.")
-
-        self.musicbutton4 = Button(self)
-        self.musicbutton4.grid(row = 6, column = 5, columnspan = 1, sticky = W)
+        self.musicbutton4 = tk.Button(self)
+        self.musicbutton4.grid(row = 7, column = 1, columnspan = 1, sticky = tk.W)
         self.musicbutton4.configure(text = "Play song.")
-              
+
+        self.musicbutton5 = tk.Button(self)
+        self.musicbutton5.grid(row = 7, column = 2, sticky = tk.W)
+        self.musicbutton5.configure(text = "Do everything.")
+          
         #remember to change this value as needed (headache avoided)
-        self.musicbutton2.configure(command = self.submit)
         self.musicbutton1.configure(command = self.savetofile1)
-        self.musicbutton3.configure(command = self.specialputinbox)
+        self.musicbutton2.configure(command = self.submit)
         self.musicbutton4.configure(command = self.playguisong)
+        self.musicbutton5.configure(command = self.doeverything)
         
     def create_text(self):
 
-        self.firstentry = Entry(self)
-        self.firstentry.grid(row = 1, column = 2, columnspan = 2, sticky = W)
+        self.firstentry = tk.Entry(self)
+        self.firstentry.grid(row = 1, column = 2, columnspan = 2, sticky = tk.W)
 
-        self.savetofile = Entry(self)
-        self.savetofile.grid(row = 6, column = 1, columnspan = 1, sticky = W)
+        self.savetofile = tk.Entry(self)
+        self.savetofile.grid(row = 6, column = 1, columnspan = 1, sticky = tk.W)
 
-        self.display = Text(self, width = 50, height = 10, wrap = WORD)
-        self.display.grid(row = 2, column = 0, columnspan = 5, sticky = W)
+        self.display = tk.Text(self, width = 50, height = 10, wrap = tk.WORD)
+        self.display.grid(row = 2, column = 0, columnspan = 5, sticky = tk.W)
         self.puttextinbox("This is where results will go. The console is more verbose for debugging.", "False")
 
-    def specialputinbox(self):
-
-        #this is so tkinter button config is happy
-
-        try:
-
-            self.puttextinbox(str(guisongdict[self.guisongnum - 1].print_songlist()), "False")
-
-        except:
-
-            self.puttextinbox("An issue occured where there was no guisong created first.", "False")
-        
     def create_checks(self):
         
-        self.bool1 = BooleanVar()
-        self.bool2 = BooleanVar()
-        self.bool3 = BooleanVar()
-        """        
-        self.check1 = Checkbutton(self)
+        self.bool1 = tk.BooleanVar()
+        self.bool2 = tk.BooleanVar()
+        self.bool3 = tk.BooleanVar()
+        """ 
+        self.check1 = tk.Checkbutton(self)
         self.check1.configure(variable = self.bool1)
         self.check1.configure(command = self.submit)
-        self.check1.grid(row = 4, column = 5, sticky = S)
-        #might want to not use a variable to save space idk
+        self.check1.grid(row = 4, column = 5, sticky = tk.S)
         """
         
     def submit(self):
@@ -126,15 +117,16 @@ class Application(Frame):
         textboxstuff = self.firstentry.get()
 
         if textboxstuff:
+            
+            guisongdict[self.guisongnum]  = Song("guisong" + str(self.guisongnum), "60", "tenor", textboxstuff)
 
-            numberofnotes = textboxstuff
-            guisongname = "guisong" + str(self.guisongnum)
-            guisongdict[self.guisongnum]  = Song("guisong" + str(self.guisongnum), "5", "4", textboxstuff)
-            guisongdict[self.guisongnum].add_notes()
-
-            print(guisongdict[self.guisongnum])            
+            self.guisongdictlist = list(guisongdict.items())
+            self.guisongdictlist2 = self.guisongdictlist[-1]
+            
+            self.guisongdictlist2[1].add_notes()
             self.guisongnum += 1
-            self.puttextinbox("Song of length " + str(textboxstuff) + " has been created. Press the display results button to see the results here.", "False")
+
+            self.puttextinbox( "length: " + textboxstuff + " " + str(self.guisongdictlist2[1].songlist), "False")
             
         else:
 
@@ -145,7 +137,7 @@ class Application(Frame):
 
         if append == "False":
 
-            self.display.delete(0.0, END)
+            self.display.delete(0.0, tk.END)
             self.display.insert(0.0, putinbox)
 
         else:
@@ -154,20 +146,19 @@ class Application(Frame):
 
     def savetofile1(self):
 
-        print("Save direcotry prompt:")
-        inputpath = askdirectory()
+        savepath = askdirectory()
         filename = self.savetofile.get()
-        
-        if not inputpath == "":
-
-            global savepath
-            savepath = inputpath
-
-        guisongdict[self.guisongnum - 1].savesonglist(filename)
+        self.guisongdictlist2[1].savesonglist(filename, savepath)
 
     def playguisong(self):
 
-        playsong(guisongdict[self.guisongnum - 1].songlist, 1)
+        playsong(self.guisongdictlist2[1].songlist, 1)
+
+    def doeverything(self):
+
+        self.submit()
+        self.savetofile1()
+        self.playguisong()
 
 #I am going to rewrite the program to work with tkinter with pack and pack-forget to hide elements (maybe a complete rewrite in node.js :P)
 
@@ -175,16 +166,16 @@ def GUI():
 
     #now enter can used to submit stuff
     def entersubmit(event = None):
-
-        app.submit()
-
+    
+        app.doeverything()
+        
     #Creates GUI from the Application class.
     print("GUI started.")
-    root = Tk()
+    root = tk.Tk()
     root.title("Python Music Program")
     root.geometry("600x400")
     app = Application(root)
-    #bind enter to submit, will later make it so that it knows where the cursor is and uses that to determine which button it should be
+    #bind enter to submit
     root.bind('<Return>', entersubmit)
     
     #Run mainloop
@@ -194,46 +185,28 @@ def GUI():
 
 class Note(object):
 
-    #This is used to create a note that will being strung together to form music
+    #This is used to create a note that will be put in a Music21 stream
     def __init__(self, name, letter, octave, sharp):
 
         self.name = name
         self.letter = letter
         self.octave = octave
         self.sharp = sharp
-        print("A new note has been created. " + str(self))
 
-        self.name2 = self.name + "music21"
-        self.notenamething = self.letter + self.octave
-        self.name2 = music21.pitch.Pitch(self.notenamething)
-        print("music21 test...." + str(self.name2.midi))
+        if self.sharp == "True":
+            
+            temp = self.letter + "#" + self.octave
+
+        else:
+
+            temp = self.letter + self.octave
+
+        self.music21note = music21.note.Note(temp)
+        print("A new note has been created. " + str(self))
         
     def __str__(self):
 
-        rep = str(self.letter)
-
-        if self.sharp == "True":
-            
-            rep += "#" + str(self.octave)
-
-        else:
-            
-            rep += str(self.octave)
-            
-        return rep
-    
-    def printstring(self):
-
-        rep = "note: "
-        rep += self.name + " " + self.letter + self.octave
-
-        if self.sharp == "True":
-            rep += " sharp"
-
-        else:
-
-            rep += " not sharp"
-
+        rep = self.music21note.fullName
         return rep
 
     def changeoctave(self, numofoct):
@@ -281,7 +254,25 @@ class Song(object):
         self.notedictionary = {}
         self.name = name
         self.speed = speed
-        self.pitch = pitch
+
+
+        self.streamname = self.name + "music21stream"
+        
+        self.streamname = music21.stream.Stream()
+        
+        if pitch in Pitches:
+            
+            self.pitch = pitch
+            self.noterange = Pitchdict[self.pitch]
+            self.noterangelist = self.noterange.split("-")
+            self.lownote = music21.note.Note(self.noterangelist[0])
+            self.highnote = music21.note.Note(self.noterangelist[1])            
+            print("Note range: " + str(self.noterangelist))
+
+        else:
+
+            self.pitch = "No pitch specified."
+
         self.length = length
 
     def __str__(self):
@@ -299,15 +290,26 @@ class Song(object):
 
         self.songlist = []
         self.notedictionary = {}
+
+        if self.pitch != "No pitch specified.":
+            
+            self.noterange = Pitchdict[self.pitch]
+            self.noterangelist = self.noterange.split("-")
+            self.lownote = music21.note.Note(self.noterangelist[0])
+            self.highnote = music21.note.Note(self.noterangelist[1])
+            print("Note range: " + str(self.noterangelist))
+
+        else:
+
+            print("Error with note ranges.")
         
-
-        for i in range(int(self.length)):
-
-            #Might want to work on making less random :P
+        i = 0
+        while i < int(self.length):
+            
             randomnote = random.choice(Note_list)
             randomoctave = random.choice(Octaves)
-            randomsharp = random.randint(0,6)
-
+            randomsharp = random.randint(0,4)
+            
             if randomsharp == 1:
 
                 issharp = "#"
@@ -316,12 +318,22 @@ class Song(object):
 
                 issharp = ""
 
-            self.notedictionary["note" + str(i)] = Note(str("note" + str(i)),str(randomnote),str(randomoctave), str(issharp))
-            randomnoteandoctave = str(randomnote) + str(randomoctave) + str(issharp)
-            self.songlist.append(str(randomnoteandoctave))
+            tempnote = str(randomnote) + str(issharp) + str(randomoctave)
+            tempmusic21note = music21.note.Note(tempnote)
+
+            if tempmusic21note.pitch.frequency > self.lownote.pitch.frequency and tempmusic21note.pitch.frequency < self.highnote.pitch.frequency:
+
+                self.notedictionary["note" + str(i)] = Note(str("note" + str(i)),str(randomnote),str(randomoctave), str(issharp))
+                self.streamname.append(music21.note.Note(tempnote))
+                self.songlist.append(str(tempnote))            
+                i += 1
+
+        for thisNote in self.streamname.notes:
             
+            print("Music21 stream test: " + str(thisNote.fullName))
+                        
         print("Notes added to song. Check testmusic.txt file for results.")
-        self.savesonglist("testmusic")
+        self.savesonglist("testmusic", "default")
 
     def print_songlist(self):
             
@@ -329,9 +341,16 @@ class Song(object):
             rep += str(self.songlist)
             return rep
 
-    def savesonglist(self, filename):
+    def savesonglist(self, filename, path):
 
-        text_file_name = os.path.join(savepath, str(filename) + ".txt")
+        if not path == "default":
+        
+            text_file_name = os.path.join(path, str(filename) + ".txt")
+
+        else:
+
+            text_file_name = os.path.join(globalsavepath, str(filename) + ".txt")
+        
         text_file = open(text_file_name, "w")
         text_file.write("song: " + str(self.songlist))
         text_file.close()
@@ -360,13 +379,11 @@ class Song(object):
 
         if self.notedictionary:
 
-            #this needs to figure out sharps so E# is not considerred different from F
             print("Transpose function used on song " + self.name + ". Transposed " + str(semitones) + " semitones.")
 
             for note in self.notedictionary:
                 
-                #idk how this is going to work
-                print("Note not transposed due to bad programming.")
+                print("Note not transposed due to bad programming. Music21 will fix it probably.")
                 
         else:
 
@@ -384,13 +401,12 @@ class fugue(object):
         print("A new fugue has been created.")
         self.name = name
         self.subjectsong = subjectsong
+        self.answers = answers
         self.answercount = 0
 
     def __str__(self):
 
-        rep = "Fugue: "
-        #might want to do a bit of work the string value of other objects to make this better
-        rep += "Name- " + self.name + " " + "Subject- " + str(self.subjectsong)
+        rep = "Fugue: " + "Name- " + self.name + " " + "Subject- " + str(self.subjectsong)
         return rep
 
     def counterpoint(self):
@@ -400,10 +416,8 @@ class fugue(object):
 
     def createanswer(self, semitones):
 
-        #this is horrendously bad but it works for the short term
-        #I will change this so it works on for loops for each note in the song changing the corresponding notes in the answer
-        #or I will change it so that the Song class has the ability to change its notes in one method call
-        self.answer = Song("answer",self.subjectsong.speed, self.subjectsong.pitch, self.subjectsong.length)
+        #this is horrendously bad but it works for the short term. I will change this so it works on for loops for each note in the song changing the corresponding notes in the answer or I will change it so that the Song class has the ability to change its notes in one method call
+        self.answer = Song("answer", self.subjectsong.speed, self.subjectsong.pitch, self.subjectsong.length)
         print(self.subjectsong.print_songlist())
         self.answer.add_notes()
         self.answer.notedictionary = self.subjectsong.notedictionary
@@ -414,7 +428,6 @@ class fugue(object):
 
     def createcountersubject(self):
 
-        #self.subjectsong
         print("This program can't create a countersubject yet :(")
       
 def playsong(songlistofsong, speed):
@@ -426,7 +439,7 @@ def playsong(songlistofsong, speed):
 
 def main():
     
-    #main function where everything happens. I am testing with the fugue class that is being worked on and using pygame to play MIDIs.
+    #main function where everything happens.
     bach_test = input("Test bach_aof module (y/n)")
     
     if bach_test != "n":
@@ -436,12 +449,10 @@ def main():
         print("Test successful")
         time.sleep(1)
     
-    fuguesong1 = Song("fuguesong1", 3, 4, 8)
+    fuguesong1 = Song("fuguesong1", 60, "alto", 8)
     fuguesong1.add_notes()
     testfugue1 = fugue("testfugue1", fuguesong1, 1)
     testfugue1.createanswer(5)
-
-    #playsong(fuguesong1.songlist, 1)
         
     #Run GUI
     GUI()
