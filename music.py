@@ -24,8 +24,6 @@ from collections import OrderedDict
 #some variables that need to be defined
 defaultsavepath = "C:/PythonMusic/textfiles/"
 globalsavepath = defaultsavepath
-guisong = 0
-guisongdict = {}
 Note_list = ["A","B","C","D","E","F","G"]
 Octaves = [1,2,3,4,5,6]
 Pitches = ["soprano", "mezzo-soprano", "alto", "tenor", "baritone", "bass"]
@@ -40,7 +38,7 @@ class Application(tk.Frame):
         self.guisongnum = 1
         self.grid()
         self.create_widgets()
-        guisongdict = OrderedDict()
+        self.guisongdict = OrderedDict()
 
     def create_widgets(self):
 
@@ -48,6 +46,7 @@ class Application(tk.Frame):
         self.create_checks()
         self.create_labels()
         self.create_buttons()
+        self.create_menus()
 
     def create_labels(self):
 
@@ -70,7 +69,7 @@ class Application(tk.Frame):
         self.musicbutton1.configure(text = "Save to file.")
         
         self.musicbutton2 = tk.Button(self)
-        self.musicbutton2.grid(row = 1, column = 4, sticky = tk.W)
+        self.musicbutton2.grid(row = 1, column = 6, sticky = tk.W)
         self.musicbutton2.configure(text = "Submit")
 
         self.musicbutton4 = tk.Button(self)
@@ -95,8 +94,11 @@ class Application(tk.Frame):
         self.savetofile = tk.Entry(self)
         self.savetofile.grid(row = 6, column = 1, columnspan = 1, sticky = tk.W)
 
-        self.display = tk.Text(self, width = 50, height = 10, wrap = tk.WORD)
-        self.display.grid(row = 2, column = 0, columnspan = 5, sticky = tk.W)
+        self.guisongspeed = tk.Entry(self)
+        self.guisongspeed.grid(row = 1, column = 5, columnspan = 1, sticky = tk.W)
+
+        self.display = tk.Text(self, width = 75, height = 15, wrap = tk.WORD)
+        self.display.grid(row = 2, column = 0, columnspan = 7, sticky = tk.W)
         self.puttextinbox("This is where results will go. The console is more verbose for debugging.", "False")
 
     def create_checks(self):
@@ -110,23 +112,35 @@ class Application(tk.Frame):
         self.check1.configure(command = self.submit)
         self.check1.grid(row = 4, column = 5, sticky = tk.S)
         """
+
+    def create_menus(self):
+
+        self.pitchmenusetting = tk.StringVar()
+        self.pitchmenu = tk.OptionMenu(self, self.pitchmenusetting, "soprano", "mezzo-soprano", "alto", "tenor", "baritone", "bass")
+        self.pitchmenu.grid(row = 1, column = 4, columnspan = 1, sticky = tk.W)
+        self.pitchmenusetting.set("alto")
         
     def submit(self):
 
-        global guisong
         textboxstuff = self.firstentry.get()
+        menustuff = self.pitchmenusetting.get()
+        speed = self.guisongspeed.get()
+
+        if not speed:
+
+            speed = "60"
 
         if textboxstuff:
-            
-            guisongdict[self.guisongnum]  = Song("guisong" + str(self.guisongnum), "60", "tenor", textboxstuff)
 
-            self.guisongdictlist = list(guisongdict.items())
+            self.guisongdict[self.guisongnum]  = Song("guisong" + str(self.guisongnum), speed, menustuff, textboxstuff)
+
+            self.guisongdictlist = list(self.guisongdict.items())
             self.guisongdictlist2 = self.guisongdictlist[-1]
             
             self.guisongdictlist2[1].add_notes()
             self.guisongnum += 1
 
-            self.puttextinbox( "length: " + textboxstuff + " " + str(self.guisongdictlist2[1].songlist), "False")
+            self.puttextinbox( "length: " + textboxstuff + "\n" + str(self.guisongdictlist2[1].print_songlist()), "False")
             
         else:
 
@@ -151,8 +165,8 @@ class Application(tk.Frame):
         self.guisongdictlist2[1].savesonglist(filename, savepath)
 
     def playguisong(self):
-
-        playsong(self.guisongdictlist2[1].songlist, 1)
+   
+        playmodule.playsong(self.guisongdictlist2[1], 60)
 
     def doeverything(self):
 
@@ -251,13 +265,9 @@ class Song(object):
 
         print("A new song has been created.")
 
-        self.notedictionary = {}
         self.name = name
         self.speed = speed
-
-
         self.streamname = self.name + "music21stream"
-        
         self.streamname = music21.stream.Stream()
         
         if pitch in Pitches:
@@ -279,17 +289,9 @@ class Song(object):
 
         rep = "song: "
         rep +=  "Name-" + str(self.name) + " " + "Speed-" + str(self.speed) + " " + "Pitch-" + str(self.pitch) + " " + "Length-" + str(self.length)
-
-        if self.notedictionary:
-            
-            rep += " ------Note dictionary avalible."
-
         return rep
 
     def add_notes(self):
-
-        self.songlist = []
-        self.notedictionary = {}
 
         if self.pitch != "No pitch specified.":
             
@@ -298,47 +300,49 @@ class Song(object):
             self.lownote = music21.note.Note(self.noterangelist[0])
             self.highnote = music21.note.Note(self.noterangelist[1])
             print("Note range: " + str(self.noterangelist))
+            i = 0
+            while i < int(self.length):
+                
+                randomnote = random.choice(Note_list)
+                randomoctave = random.choice(Octaves)
+                randomsharp = random.randint(0,4)
+                
+                if randomsharp == 1:
+
+                    issharp = "#"
+                
+                else:
+
+                    issharp = ""
+
+                tempnote = str(randomnote) + str(issharp) + str(randomoctave)
+                tempmusic21note = music21.note.Note(tempnote)
+
+                if tempmusic21note.pitch.frequency > self.lownote.pitch.frequency and tempmusic21note.pitch.frequency < self.highnote.pitch.frequency:
+
+                    self.streamname.append(music21.note.Note(tempnote))            
+                    i += 1
+
+            for thisNote in self.streamname.notes:
+                
+                print("Music21 stream test: " + str(thisNote.fullName))
+                            
+            print("Notes added to song. Check testmusic.txt file for results.")
+            self.savesonglist("testmusic", "default")
 
         else:
 
             print("Error with note ranges.")
         
-        i = 0
-        while i < int(self.length):
-            
-            randomnote = random.choice(Note_list)
-            randomoctave = random.choice(Octaves)
-            randomsharp = random.randint(0,4)
-            
-            if randomsharp == 1:
-
-                issharp = "#"
-            
-            else:
-
-                issharp = ""
-
-            tempnote = str(randomnote) + str(issharp) + str(randomoctave)
-            tempmusic21note = music21.note.Note(tempnote)
-
-            if tempmusic21note.pitch.frequency > self.lownote.pitch.frequency and tempmusic21note.pitch.frequency < self.highnote.pitch.frequency:
-
-                self.notedictionary["note" + str(i)] = Note(str("note" + str(i)),str(randomnote),str(randomoctave), str(issharp))
-                self.streamname.append(music21.note.Note(tempnote))
-                self.songlist.append(str(tempnote))            
-                i += 1
-
-        for thisNote in self.streamname.notes:
-            
-            print("Music21 stream test: " + str(thisNote.fullName))
-                        
-        print("Notes added to song. Check testmusic.txt file for results.")
-        self.savesonglist("testmusic", "default")
 
     def print_songlist(self):
             
-            rep = "song: "
-            rep += str(self.songlist)
+            rep = "song:\n"
+
+            for thisNote in self.streamname.notes:
+                
+                rep += str(thisNote.fullName) + "\n"
+
             return rep
 
     def savesonglist(self, filename, path):
@@ -350,44 +354,36 @@ class Song(object):
         else:
 
             text_file_name = os.path.join(globalsavepath, str(filename) + ".txt")
-        
+
         text_file = open(text_file_name, "w")
-        text_file.write("song: " + str(self.songlist))
+        text_file.write("song: ")
         text_file.close()
-        print("Song written to " + filename + ".txt")
+        
+        for thisNote in self.streamname.notes:
             
+            text_file = open(text_file_name, "a")
+            text_file.write(str(thisNote.pitch) + " - ")
+            text_file.close()
+            print("Song written to " + filename + ".txt")
+
     def append_notes(self, numofnotestoappend):
 
-        if self.notedictionary and numofnotestoappend > 0:
-            
-            newnotenum = len(self.notedictionary) + 1
+        if numofnotestoappend > 0:
             
             for i in range(numofnotestoappend):
 
-                newnotename = "note" + str(newnotenum)
-                
-                self.notedictionary[newnotename] = Note(newnotename, "A", "1", "True")
                 self.length += 1
-                newnotenum += 1
-                print("Note appended to song. This note has random nonsense for letter and octave. You should change that.")
-
         else:
             
             print("Error type 11: Appending note to song failed.")
-
+    
     def transpose(self, semitones):
 
-        if self.notedictionary:
-
-            print("Transpose function used on song " + self.name + ". Transposed " + str(semitones) + " semitones.")
-
-            for note in self.notedictionary:
-                
-                print("Note not transposed due to bad programming. Music21 will fix it probably.")
-                
-        else:
-
-            print("Transpose function used on song " + self.name + ". Transposed " + str(semitones) + " semitones.")            
+        badprogramming = "True"
+        #if self.notedictionary:
+        if badprogramming == "True":
+            
+            print("Transpose function used on song " + self.name + ". Transposed " + str(semitones) + " semitones.")        
 
     def changenotestolist(self, changelist):
 
@@ -416,31 +412,22 @@ class fugue(object):
 
     def createanswer(self, semitones):
 
-        #this is horrendously bad but it works for the short term. I will change this so it works on for loops for each note in the song changing the corresponding notes in the answer or I will change it so that the Song class has the ability to change its notes in one method call
         self.answer = Song("answer", self.subjectsong.speed, self.subjectsong.pitch, self.subjectsong.length)
-        print(self.subjectsong.print_songlist())
-        self.answer.add_notes()
-        self.answer.notedictionary = self.subjectsong.notedictionary
-        self.answer.songlist = self.subjectsong.songlist
-        print(self.answer.print_songlist())
-        self.answer.transpose(semitones)
-        self.answercount += 1
+        for thisNote in self.subjectsong.streamname:
 
+            print("Note appended to answer.")
+            self.answer.streamname.append(thisNote)
+
+        print(self.answer.print_songlist())
+        
     def createcountersubject(self):
 
         print("This program can't create a countersubject yet :(")
-      
-def playsong(songlistofsong, speed):
-
-    for note in songlistofsong:
-
-        music21note = music21.pitch.Pitch(note)
-        playmodule.playmidinote(music21note.midi, speed)
-
+    
 def main():
     
     #main function where everything happens.
-    bach_test = input("Test bach_aof module (y/n)")
+    bach_test = input("Test bach_aof module? (y/n)")
     
     if bach_test != "n":
         
@@ -453,7 +440,8 @@ def main():
     fuguesong1.add_notes()
     testfugue1 = fugue("testfugue1", fuguesong1, 1)
     testfugue1.createanswer(5)
-        
+    print(fuguesong1.print_songlist())    
+
     #Run GUI
     GUI()
 
