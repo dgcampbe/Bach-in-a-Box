@@ -16,16 +16,15 @@ from pygame import midi
 import time
 #Music21 module from MIT (absolutely amazing)
 import music21
-#A module I made for testing using pygame for playing MIDIs(included)
-import bach_aof
 import playmodule
 from collections import OrderedDict
+import sys
 
 #some variables that need to be defined
 defaultsavepath = "C:/PythonMusic/textfiles/"
 globalsavepath = defaultsavepath
-Note_list = ["A","B","C","D","E","F","G"]
-Octaves = [1,2,3,4,5,6]
+Note_list = ["A", "B", "C", "D" , "E", "F", "G"]
+Octaves = [0, 1, 2, 3, 4, 5, 6]
 Pitches = ["soprano", "mezzo-soprano", "alto", "tenor", "baritone", "bass"]
 Pitchdict = {"soprano": "C4-A5", "mezzo-soprano": "A3-F5", "alto": "F3-D5", "tenor": "B2-G4", "baritone": "G2-E4", "bass": "E2-C4"}
 
@@ -96,6 +95,7 @@ class Application(tk.Frame):
 
         self.guisongspeed = tk.Entry(self)
         self.guisongspeed.grid(row = 1, column = 5, columnspan = 1, sticky = tk.W)
+        self.guisongspeed.insert(0, "60")
 
         self.display = tk.Text(self, width = 75, height = 15, wrap = tk.WORD)
         self.display.grid(row = 2, column = 0, columnspan = 7, sticky = tk.W)
@@ -126,11 +126,7 @@ class Application(tk.Frame):
         menustuff = self.pitchmenusetting.get()
         speed = self.guisongspeed.get()
 
-        if not speed:
-
-            speed = "60"
-
-        if textboxstuff:
+        if textboxstuff and speed:
 
             self.guisongdict[self.guisongnum]  = Song("guisong" + str(self.guisongnum), speed, menustuff, textboxstuff)
 
@@ -140,12 +136,12 @@ class Application(tk.Frame):
             self.guisongdictlist2[1].add_notes()
             self.guisongnum += 1
 
-            self.puttextinbox( "length: " + textboxstuff + "\n" + str(self.guisongdictlist2[1].print_songlist()), "False")
+            self.puttextinbox( "length: " + textboxstuff + "\n" + str(self.guisongdictlist2[1]), "False")
             
         else:
 
-            print("No Number provided.")
-            self.puttextinbox("No Number provided.", "False")
+            print("No Numbers provided.")
+            self.puttextinbox("No Numbers provided.", "False")
 
     def puttextinbox(self, putinbox, append):
 
@@ -166,7 +162,7 @@ class Application(tk.Frame):
 
     def playguisong(self):
    
-        playmodule.playsong(self.guisongdictlist2[1], 60)
+        playmodule.playsong(self.guisongdictlist2[1])
 
     def doeverything(self):
 
@@ -178,7 +174,6 @@ class Application(tk.Frame):
 
 def GUI():
 
-    #now enter can used to submit stuff
     def entersubmit(event = None):
     
         app.doeverything()
@@ -195,72 +190,9 @@ def GUI():
     #Run mainloop
     root.mainloop()
 
-#some normal classes defined below
-
-class Note(object):
-
-    #This is used to create a note that will be put in a Music21 stream
-    def __init__(self, name, letter, octave, sharp):
-
-        self.name = name
-        self.letter = letter
-        self.octave = octave
-        self.sharp = sharp
-
-        if self.sharp == "True":
-            
-            temp = self.letter + "#" + self.octave
-
-        else:
-
-            temp = self.letter + self.octave
-
-        self.music21note = music21.note.Note(temp)
-        print("A new note has been created. " + str(self))
-        
-    def __str__(self):
-
-        rep = self.music21note.fullName
-        return rep
-
-    def changeoctave(self, numofoct):
-
-        try:
-
-            self.octave = int(self.octave) + int(numofoct)
-            self.octave = str(self.octave)
-
-        except:
-
-            input("Error type 5 occured: Please Debug")
-
-    def changenote(self, newnote):
-
-        if newnote in Note_list:
-
-            self.letter = newnote
-
-        else:
-
-            input("An illegal note change was attempted and stopped. Notes can only be called something A-G.")
-
-    def swapsharpstate(self):
-
-        if self.sharp == "True":
-
-            self.sharp = "False"
-
-        elif self.sharp == "False":
-
-            self.sharp = "True"
-
-        else:
-
-            input("A note sharp state swap was attempted but an issue occurred and as a preventive measure, was halted. You should debug this.")
-
 class Song(object):
 
-    #This is used to makes a groups of notes to create a song (or maybe just a single "voice" of a fugue)
+    #This creates a Music21 stream of random notes
     def __init__(self, name, speed, pitch, length):
 
         print("A new song has been created.")
@@ -287,8 +219,12 @@ class Song(object):
 
     def __str__(self):
 
-        rep = "song: "
-        rep +=  "Name-" + str(self.name) + " " + "Speed-" + str(self.speed) + " " + "Pitch-" + str(self.pitch) + " " + "Length-" + str(self.length)
+        rep = "song:\n"
+
+        for thisNote in self.streamname.notes:
+                
+            rep += str(thisNote.fullName) + "\n"
+
         return rep
 
     def add_notes(self):
@@ -299,8 +235,8 @@ class Song(object):
             self.noterangelist = self.noterange.split("-")
             self.lownote = music21.note.Note(self.noterangelist[0])
             self.highnote = music21.note.Note(self.noterangelist[1])
-            print("Note range: " + str(self.noterangelist))
             i = 0
+            
             while i < int(self.length):
                 
                 randomnote = random.choice(Note_list)
@@ -322,10 +258,6 @@ class Song(object):
 
                     self.streamname.append(music21.note.Note(tempnote))            
                     i += 1
-
-            for thisNote in self.streamname.notes:
-                
-                print("Music21 stream test: " + str(thisNote.fullName))
                             
             print("Notes added to song. Check testmusic.txt file for results.")
             self.savesonglist("testmusic", "default")
@@ -334,17 +266,6 @@ class Song(object):
 
             print("Error with note ranges.")
         
-
-    def print_songlist(self):
-            
-            rep = "song:\n"
-
-            for thisNote in self.streamname.notes:
-                
-                rep += str(thisNote.fullName) + "\n"
-
-            return rep
-
     def savesonglist(self, filename, path):
 
         if not path == "default":
@@ -364,34 +285,22 @@ class Song(object):
             text_file = open(text_file_name, "a")
             text_file.write(str(thisNote.pitch) + " - ")
             text_file.close()
-            print("Song written to " + filename + ".txt")
 
-    def append_notes(self, numofnotestoappend):
-
-        if numofnotestoappend > 0:
-            
-            for i in range(numofnotestoappend):
-
-                self.length += 1
-        else:
-            
-            print("Error type 11: Appending note to song failed.")
+        print("Song written to " + filename + ".txt")
     
     def transpose(self, semitones):
 
-        badprogramming = "True"
-        #if self.notedictionary:
-        if badprogramming == "True":
-            
-            print("Transpose function used on song " + self.name + ". Transposed " + str(semitones) + " semitones.")        
+        transposedstream = music21.stream.Stream()
+        
+        for thisNote in self.streamname:
 
-    def changenotestolist(self, changelist):
+            transposednote = thisNote.transpose(int(semitones))
+            transposedstream.append(transposednote)
 
-        print("this should work")
+        return transposedstream
     
 class fugue(object):
 
-    #Not even close to done
     def __init__(self, name, subjectsong, answers):
 
         print("A new fugue has been created.")
@@ -402,7 +311,7 @@ class fugue(object):
 
     def __str__(self):
 
-        rep = "Fugue: " + "Name- " + self.name + " " + "Subject- " + str(self.subjectsong)
+        rep = "Fugue: " + "Name- " + self.name + " " + "Subject- " + self.subjectsong.name
         return rep
 
     def counterpoint(self):
@@ -413,12 +322,13 @@ class fugue(object):
     def createanswer(self, semitones):
 
         self.answer = Song("answer", self.subjectsong.speed, self.subjectsong.pitch, self.subjectsong.length)
+
         for thisNote in self.subjectsong.streamname:
 
-            print("Note appended to answer.")
             self.answer.streamname.append(thisNote)
 
-        print(self.answer.print_songlist())
+        self.answer.streamname = self.answer.transpose(semitones)            
+        print(str(self.answer))
         
     def createcountersubject(self):
 
@@ -427,21 +337,28 @@ class fugue(object):
 def main():
     
     #main function where everything happens.
-    bach_test = input("Test bach_aof module? (y/n)")
+    bach_test = "n"
     
     if bach_test != "n":
-        
-        print("Tesitng.....\n")
-        bach_aof.miditest()
-        print("Test successful")
-        time.sleep(1)
-    
+
+        print("Playing.....\n")
+        playmodule.playfromfile(os.path.join(sys.path[0], "aof.txt"))
+        print("Done playing.")
+
     fuguesong1 = Song("fuguesong1", 60, "alto", 8)
     fuguesong1.add_notes()
     testfugue1 = fugue("testfugue1", fuguesong1, 1)
-    testfugue1.createanswer(5)
-    print(fuguesong1.print_songlist())    
+    testfugue1.createanswer(5)    
 
+    fugue_test = input("Play fugue? (y/n)")
+    
+    if fugue_test != "n":
+
+        print("Playing subject......")
+        playmodule.playsong(testfugue1.subjectsong)
+        print("Playing answer.......")
+        playmodule.playsong(testfugue1.answer)
+    
     #Run GUI
     GUI()
 
@@ -449,5 +366,3 @@ def main():
 
 #Run main
 main()
-
-#This is the end for now
