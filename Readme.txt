@@ -1,19 +1,19 @@
-This is a little Python script I am making. It will hopefully be a script to write baroque music. This will probably have extensive use of Music21 from MIT.
+This is a little Python script to write music in a baroque style and to handle calculations related to just intonation.
 
-It feels like a lot of the work I did isn't needed since I found Music21.
+This includes the ability to use counterpoint.
 
-Right now it is only able to write random notes to a file and a GUI is in the works using tkinter.
-
-I have been working on migrating to Linux so Linux-related things are in the works. I am working on making this program work in Linux.
-
-I don't know how well tkinter of os.path work in Linux, I will do more research. This is mostly just for Windows for the time being though.
+It makes extensive use of Music21 from MIT.
 
 If for some reason the Linux version fails to work in Linux, try running dos2unix can on it.
 
-In the mean time the Windows version SHOULD work.
+The dos2unix package is easy to get for Arch-based distrobutions in the AUR.
 
-Idk about other distros of Linux, but the dos2unix package is easy to get for Arch in the AUR.
+Art of Fugue midi converted from a score by Pikabolt5 at https://musescore.com/pikabolt5/the-art-of-fugue-contrapunctus-i under licensed Creative Commons Zero.
 
-I beleive that everything is working as fine as can be for Windows (excluding bugs in the program itself :P)
+Possible features in the long term:
 
-I doubt anyone in the right mind would want to use this code for anything, but if you do feel free. :P
+UI using electron instead of a messy, barely functioning tkinter UI
+
+use of scipy and numpy for better mathematical calculations
+
+less code that reinvents the wheel and performance improvments
