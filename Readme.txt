@@ -8,7 +8,9 @@ If for some reason the Linux version fails to work in Linux, try running dos2uni
 
 The dos2unix package is easy to get for Arch-based distrobutions in the AUR.
 
-Art of Fugue midi converted from a score by Pikabolt5 at https://musescore.com/pikabolt5/the-art-of-fugue-contrapunctus-i under licensed Creative Commons Zero.
+License only applies to work done by me and excludes small portions like the following. They are licensed under their respective licenses:
+
+Art of Fugue example midi converted from a score by Pikabolt5 at https://musescore.com/pikabolt5/the-art-of-fugue-contrapunctus-i under licensed Creative Commons Zero.
 
 Possible features in the long term:
 

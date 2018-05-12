@@ -28,6 +28,8 @@ def sine_tone(frequency, duration, volume=1, sample_rate = 22050):
     stream.close()
     p.terminate()
 
+#once exporting and importing to and from midi works properly, playing midi files using the code below will no longer be supported (as if it ever really worked anyway)
+
 def playmidinote(notenum, tempo):
 
     try:
@@ -46,8 +48,6 @@ def playmidinote(notenum, tempo):
 
         del midi_out
         pygame.midi.quit()
-
-#this takes an array of notenums and plays them
 
 def midichord(notenum_array, seconds):
 
@@ -75,12 +75,6 @@ def midichord(notenum_array, seconds):
         del midi_out
         pygame.midi.quit()        
     
-def playsong(songtoplay):
-    
-    for thisNote in songtoplay.streamname:
-
-        playmidinote(thisNote.pitch.midi, songtoplay.speed)
-
 def pysynth_play(name, song, tempo):
   
     pysynth_b.make_wav(song, fn = "pysynth - " + str(name) + ".wav", bpm = tempo)

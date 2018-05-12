@@ -50,7 +50,8 @@ class Song(music21.stream.Stream):
         self.save_midi(self.name)
         
     def save_midi(self, name):
-        
+
+        #Currently there is an issue with the following code and music21 I can't seem to fix
         #self.write("midi", name + ".midi")
         self.show("midi")
 
@@ -58,31 +59,27 @@ class Voice(Song):
 
     def __init__(self, pitch):
 
+        print("Voice created.")
+
         Pitches = ["soprano",
                    "mezzo-soprano",
                    "alto",
                    "tenor",
                    "baritone",
                    "bass"]
-        Pitchdict = {"soprano": "C4-A5",
-                     "mezzo-soprano": "A3-F5",
-                     "alto": "F3-D5",
-                     "tenor": "B2-G4",
-                     "baritone": "G2-E4",
-                     "bass": "E2-C4"}
 
-        print("Voice created.")
-        self.noterange = Pitchdict[self.pitch]
-        self.noterangelist = self.noterange.split("-")
-        self.lownote = music21.note.Note(self.noterangelist[0])
-        self.highnote = music21.note.Note(self.noterangelist[1])
+        Pitch_Ranges = {"soprano": ["C4", "A5"],
+                     "mezzo-soprano": ["A3", "F5"],
+                     "alto": ["F3", "D5"],
+                     "tenor": ["B2", "G4"],
+                     "baritone": ["G2", "E4"],
+                     "bass": ["E2", "C4"]}
 
         if pitch in Pitches:
             
             self.pitch = pitch
-            self.noterange = Pitchdict[self.pitch]
-                       
-            print("Note range: " + str(self.noterangelist))
+            self.range = Pitch_Ranges[self.pitch]
+            print("Note range: " + str(self.range))
 
         else:
 
@@ -94,6 +91,8 @@ class Counterpoint_Voice(Voice):
 
         print("Counterpoint Voice created.")
 
+        #the following text is just reference for me when I get to writing this part of the program- credit goes to wikipedia
+        
         #spieces
         """
         1. Note against note;

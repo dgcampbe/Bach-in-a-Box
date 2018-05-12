@@ -33,18 +33,18 @@ def comma_proof(starting_frequency):
     print("Hear the difference?")
     time.sleep(1)
     
-def comma_sequence(frequency, up, iterations):
+def comma_sequence(frequency, direction, iterations):
 
     for i in range(iterations):
 
         print(str(frequency))
         playmodule.sine_tone(frequency, 1)
 
-        if up:
+        if direction == "up":
 
             frequency *= syntonic_comma
 
-        elif not up:
+        elif direction == "down":
 
             frequency /= syntonic_comma        
 
@@ -79,6 +79,15 @@ def interpret(interpret_this):
         else:
 
             print("Syntax is not parsable.")
+
+class Just_Interval(object):
+
+    def __init__(self):
+
+        print("Just Interval created.")
+        ratios = [1/1, 16/15, 9/8, 6/5, 5/4, 4/3, [45/32, 25/18], 3/2, 8/5, 5/3, 16/9, 15/8, 2/1]
+        self.frequency = None
+
        
 def main():
 
@@ -86,7 +95,7 @@ def main():
     scale(440.0)
 
 ratios = {"Unison": 1/1, "Semitone": 16/15, "Second": 9/8, "Minor third": 6/5, "Third": 5/4, "Fourth": 4/3,
-          "Tritone": 45/32, "Tritone 2": 25/18, "Fifth": 3/2, "Minor sixth": 8/5, "Sixth": 5/3, "Minor seventh": 16/9,
+          "Tritone": [45/32, 25/18], "Fifth": 3/2, "Minor sixth": 8/5, "Sixth": 5/3, "Minor seventh": 16/9,
           "Seventh": 15/8, "Octave": 2/1}
 otherratios= { }
 syntonic_comma = 1.0125
