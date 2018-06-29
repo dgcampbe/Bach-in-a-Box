@@ -3,11 +3,6 @@
 
 #import random module for some randomness in the music
 import random
-#import tkinter for GUI
-import tkinter as tk
-#for file and folder dialogs
-from tkinter.filedialog import askdirectory
-from tkinter.filedialog import askopenfilename
 #for writing some files to a specified folder
 import os
 import time
@@ -15,16 +10,20 @@ import time
 import music21
 import playback
 
-class Song(music21.stream.Stream):
+class Song(music21.stream.Voice):
 
-    #This creates a Music21 stream of random notes
-    def __init__(self, name = "", tempo = 60, length = 12):
+    #This creates a Music21 Voice of random monophonoic notes
+    def __init__(self, name = "", tempo = 60, length = 12, automake = False):
 
         super().__init__()
         print("Song created.")
         self.name = name
         self.tempo = tempo
         self.length = length
+
+        if automake != False:
+
+            self.add_notes()
 
     def __str__(self):
 
@@ -52,7 +51,12 @@ class Song(music21.stream.Stream):
     def save_midi(self):
 
         mf = music21.midi.translate.streamToMidiFile(self.transpose(0))
-        mf.open("data/" + self.name + ".midi", 'wb')
+
+        if not os.path.exists(os.path.join(os.path.normpath(os.getcwd() + os.sep + os.pardir), "data", "generated", self.name)):
+            
+            os.makedirs(os.path.join(os.path.normpath(os.getcwd() + os.sep + os.pardir), "data", "generated", self.name))
+        
+        mf.open(os.path.join(os.path.normpath(os.getcwd() + os.sep + os.pardir), "data", "generated", self.name, self.name + ".midi"), 'wb')
         mf.write()
         mf.close()
         
@@ -130,7 +134,7 @@ class Fugue_Voice(Counterpoint_Voice):
 
         print("Fugue Voice created.")
 
-        if type(subject, Song):
+        if type(subject, Counterpoint_Voice):
         
             self.subject = subject
 
@@ -162,7 +166,7 @@ class Fugue(Fugue_Voice):
         
         for thisNote in self.subject:
 
-             this.Note.transpose(semitones)
+             tempNote = thisNote.transpose(semitones)
 
         self.answers.append("")
         
@@ -173,23 +177,18 @@ class Fugue(Fugue_Voice):
 def main():
     
     #main function where everything happens.
-    
-    if input("Play Bach? (y/n)").lower() == "y":
+    """
+    if input("Play ? (y/n)").lower() == "y":
 
         print("Playing.....\n")
 
         print("Done playing.")
-
+    """
     test_song = Song("test", 60, 12)
     test_song.add_notes(40, 60)
 
     test_fugue = Fugue("test_fugue", 4)
     #test_fugue.create()    
-    
-    if input("Play fugue? (y/n)").lower() == "y":
-
-        print("Playing subject......")
-        .playsong(testfugue1.subject)
 
     #Run GUI
     GUI()
