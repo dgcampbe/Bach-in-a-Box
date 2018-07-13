@@ -1,23 +1,24 @@
 This is a Python program designed to generate music in a baroque style, use counterpoint, and to handle calculations related to just intonation.
 
-It makes extensive use of Music21 from MIT.
+Before running for the first time, run build.bat on Windows. --- not needed yet
 
-If the program doesn't run at all on Linux, run dos2unix can on it.
+It makes extensive use of:
 
-This SHOULD rectify the issue.
+-Music21 http://web.mit.edu/music21/
+-PyQt5 https://pypi.org/project/PyQt5/
 
-The dos2unix package is easy to get for Arch-based distrobutions in the AUR.
+If the program doesn't run at all on Linux, run dos2unix can on it. This SHOULD rectify the issue. The dos2unix package is easy to get for Arch-based distrobutions in the AUR.
 
 License only applies to work done by me and excludes small portions like the following. They are licensed under their respective licenses (usually GNU or MIT or similar) :
 
 Art of Fugue example midi converted from a score by Pikabolt5 at https://musescore.com/pikabolt5/the-art-of-fugue-contrapunctus-i under licensed Creative Commons Zero.
 
-Possible features in the long term:
+Planned Features:
 
-UI using electron instead of a messy, barely functioning tkinter UI
+-User interface in PyQt5
 
-use of scipy and numpy for better mathematical calculations
+-scipy and numpy for better mathematical calculations
 
-less code that reinvents the wheel and performance improvments
+-100% cross-platform
 
-rename
+-Less unneeded code and better performance

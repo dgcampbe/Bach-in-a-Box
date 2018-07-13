@@ -1,0 +1,3 @@
+cd src/user_interface
+user_interface_build.bat
+PAUSE
