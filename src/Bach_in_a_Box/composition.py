@@ -1,26 +1,41 @@
 #!/usr/bin/env python
 #composition module
 
-#import random module for some randomness in the music
 import random
-#for writing some files to a specified folder
-import os
+import os #file writing
 import time
-#Music21 module from MIT
-import music21
-import playback
+import music21 #Music21 module from MIT
+from backend import playback
 
-class Song(music21.stream.Voice):
+class Voice(music21.stream.Voice):
 
     #This creates a Music21 Voice of random monophonoic notes
-    def __init__(self, name = "", tempo = 60, length = 12, automake = False):
+    def __init__(self, name = "", tempo = 60, length = 12, pitch = None, automake = False):
 
+        print("Voice created.")
         super().__init__()
-        print("Song created.")
         self.name = name
         self.tempo = tempo
         self.length = length
-        self.default_save_directory = os.path.join(os.path.normpath(os.getcwd() + os.sep + os.pardir), "data", "generated", self.name)
+
+        Pitch_Ranges = {"soprano": ("C4", "A5"),
+                     "mezzo-soprano": ("A3", "F5"),
+                     "alto": ("F3", "D5"),
+                     "tenor": ("B2", "G4"),
+                     "baritone": ("G2", "E4"),
+                     "bass": ("E2", "C4")}
+        
+        if pitch in Pitch_Ranges:
+            
+            self.pitch = pitch
+            self.range = Pitch_Ranges[self.pitch]
+
+        else:
+
+            self.pitch = "No pitch specified."
+            self.range = "No range specified."
+    
+        self.default_save_directory = os.path.join(os.path.normpath(os.getcwd() + os.sep + os.pardir + os.sep + os.pardir), "data", "generated", self.name)
         
         if automake != False:
 
@@ -36,13 +51,13 @@ class Song(music21.stream.Voice):
 
         return rep
 
-    def add_notes(self, minimum_pitch, maximum_pitch):
+    def add_notes(self):
 
         i = 0
             
         while i < int(self.length):
                 
-            randomnote = random.randint(music21.note.Note(minimum_pitch).pitch.midi, music21.note.Note(maximum_pitch).pitch.midi)
+            randomnote = random.randint(music21.note.Note(self.range[0]).pitch.midi, music21.note.Note(self.range[1]).pitch.midi)
             randommusic21note = music21.note.Note(randomnote)
             self.append(randommusic21note)            
             i += 1
@@ -51,7 +66,8 @@ class Song(music21.stream.Voice):
         
     def save_midi(self):
 
-        mf = music21.midi.translate.streamToMidiFile(self.transpose(0))
+        #self.show("midi")
+        mf = music21.midi.translate.streamToMidiFile(self)
 
         if not os.path.exists(self.default_save_directory):
             
@@ -60,39 +76,10 @@ class Song(music21.stream.Voice):
         mf.open(os.path.join(self.default_save_directory, self.name + ".midi"), 'wb')
         mf.write()
         mf.close()
-        
-class Voice(Song):
-
-    def __init__(self, pitch):
-
-        print("Voice created.")
-
-        Pitches = ["soprano",
-                   "mezzo-soprano",
-                   "alto",
-                   "tenor",
-                   "baritone",
-                   "bass"]
-
-        Pitch_Ranges = {"soprano": ["C4", "A5"],
-                     "mezzo-soprano": ["A3", "F5"],
-                     "alto": ["F3", "D5"],
-                     "tenor": ["B2", "G4"],
-                     "baritone": ["G2", "E4"],
-                     "bass": ["E2", "C4"]}
-
-        if pitch in Pitches:
-            
-            self.pitch = pitch
-            self.range = Pitch_Ranges[self.pitch]
-            print("Note range: " + str(self.range))
-
-        else:
-
-            self.pitch = "No pitch specified."
 
 class Counterpoint_Voice(Voice):
 
+    #later this will allow for specific rules for voices intended to be used for counterpoint
     def __init__(self):
 
         print("Counterpoint Voice created.")
@@ -131,6 +118,7 @@ class Counterpoint_Voice(Voice):
         
 class Fugue_Voice(Counterpoint_Voice):
 
+    #later this will allow for specific rules for voices intended to be used just for fugues
     def __init__(self, subject = None):
 
         print("Fugue Voice created.")
@@ -145,16 +133,25 @@ class Fugue_Voice(Counterpoint_Voice):
     
 class Fugue(Fugue_Voice):
 
+    #this is a fugue -- currently does basically nothing
     def __init__(self, name, voices, subject = None):
 
         print("Fugue created.")
         self.name = name
-        self.subject = subject
-        self.answers = []
+        self.voices = {"Subject": subject}
+
+        for i in range(voices - 1):
+
+            self.voices["Answer" + str(i + 1)] = None
 
     def __str__(self):
 
-        rep = "Fugue: " + "Name- " + self.name + " " + "Subject- " + self.subject.name
+        rep = "Fugue:"
+
+        for voice in self.voices:
+
+            rep += str(voice)
+            
         return rep
 
     def counterpoint(self):

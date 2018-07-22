@@ -1,6 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import bach_interface
 import sys
+
+if __name__ == "__main__":
+    
+    import bach_interface
+
+else:
+
+    from user_interface import bach_interface
 
 def main():
     
@@ -11,4 +18,6 @@ def main():
     Dialog.show()
     sys.exit(app.exec_())
 
-main()
+if __name__ == "__main__":
+    
+    main()

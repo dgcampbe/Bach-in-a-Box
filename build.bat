@@ -1,3 +1,3 @@
-cd src/user_interface
-user_interface_build.bat
+cd src/Bach_in_a_Box/user_interface
+bach_interface_build.bat
 PAUSE

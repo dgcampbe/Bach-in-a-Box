@@ -19,6 +19,8 @@ Planned Features:
 
 -scipy and numpy for better mathematical calculations
 
+-perhaps some SuperCollider for audio output 
+
 -100% cross-platform
 
 -Less unneeded code and better performance
