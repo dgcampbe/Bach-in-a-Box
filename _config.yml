@@ -8,7 +8,7 @@ plugins:
    - jekyll-feed
 
 title: Bach in a Box
-description: Bach in a Box: A project for music
+description: Bach in a Box
 logo: /assets/img/bach-in-a-box-logo.png
 show_downloads: true
 google_analytics:
