@@ -7,8 +7,8 @@ plugins:
    - jekyll-sitemap
    - jekyll-feed
 
----
 title: Bach in a Box
-logo: assets/bach-in-a-box-logo.png
-show_downloads: "true"
----
+description: Bach in a Box: A project for music
+logo: /assets/img/bach-in-a-box-logo.png
+show_downloads: true
+google_analytics:
