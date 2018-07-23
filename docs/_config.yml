@@ -1,4 +1,5 @@
 theme: jekyll-theme-time-machine
+theme: jekyll-theme-minimal
 
 plugins:
    - jekyll-mentions
