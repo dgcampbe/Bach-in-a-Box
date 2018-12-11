@@ -7,7 +7,7 @@ from user_interface import interface
 
 def main():
     
-    test_voice = composition.Voice("test", 60, 12, "tenor")
+    test_voice = composition.Voice("test", "D3", 12, "tenor")
     test_voice.add_notes()
     print(str(test_voice))
     test_fugue = composition.Fugue("test_fugue", 4)
