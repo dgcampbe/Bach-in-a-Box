@@ -9,6 +9,7 @@ plugins:
 
 title: Bach in a Box
 description: Bach in a Box
+layout: default
 logo: /assets/img/bach-in-a-box-logo.png
 show_downloads: true
 google_analytics:
