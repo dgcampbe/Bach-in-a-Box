@@ -10,7 +10,7 @@
 
 Before running for the first time, run build.bat on Windows. --- not needed yet
 
-If the program doesn't run at all on Linux, run dos2unix can on it. This SHOULD rectify the issue. The dos2unix package is easy to get for Arch-based distrobutions in the AUR.
+If the program doesn't run at all on Linux, run dos2unix on it. This SHOULD rectify the issue. The dos2unix package is easy to get for Arch-based distrobutions in the AUR.
 
 License only applies to work done by me and excludes small portions like the following. They are licensed under their respective licenses (GNU, MIT, etc.):
 
@@ -18,13 +18,19 @@ License only applies to work done by me and excludes small portions like the fol
 
 - Logo in docs folder made from a public domain painting of Bach and a image by Svengraph [here](https://commons.wikimedia.org/wiki/File:Svengraph_Box.png "Box image") licensed under [Creative Commons Attribution 3.0 Unported](https://creativecommons.org/licenses/by/3.0/deed.en "Creative Commons Attribution 3.0 Unported")
 
+<h3>Here are some basic reading</h3>
+
+- https://en.wikipedia.org/wiki/Five-limit_tuning
+
+- More sources coming. To be honest, I don't know everything about this either. I am learning through experience. :P
+
 <h3>Planned Features:</h3>
 
-- User interface in PyQt5
+- UI in PyQt5
 
-- scipy and numpy for better mathematical calculations
+- Use of scipy and numpy for mathematical calculations
 
-- perhaps some SuperCollider for audio output 
+- SuperCollider audio output through osc4py3(Documented here: https://osc4py3.readthedocs.io/en/latest/) or oscpy(Source here: https://github.com/kivy/oscpy)
 
 - 100% cross-platform
 
