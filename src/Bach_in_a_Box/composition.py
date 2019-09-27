@@ -18,67 +18,59 @@ Pitch_Ranges = {"soprano": ("C4", "A5"),
              "bass": ("E2", "C4")}
 
 for i in Pitch_Ranges: Pitch_Ranges[i] = tuple([music21.note.Note(x) for x in Pitch_Ranges[i]])
-print(str(Pitch_Ranges))
+#print(str(Pitch_Ranges))
 
 #Classes
 class Voice(music21.stream.Voice):
 
-    #This creates a Music21 Voice of random monophonoic notes
-    def __init__(self, name = "", first_note = "C4", length = 12, pitch = "tenor"):
+    #This creates a Music21 Voice of random notes from a selected scale
+    def __init__(self, name = "", scale = music21.scale.MajorScale("C"), length = 12, pitch = "tenor"):
 
         print("Voice created.")
         super().__init__()
         self.name = name
-        self.first_note = music21.note.Note(first_note)
+        self.scale = scale
         self.length = length
         self.default_save_directory = os.path.join(os.path.normpath(os.getcwd() + os.sep + os.pardir + os.sep + os.pardir), "data", "generated", self.name)
-        
+
         if pitch in Pitch_Ranges:
-            
+
             self.pitch = pitch
             self.range = Pitch_Ranges[self.pitch]
 
         else: raise
-        
+
     def __str__(self):
 
         rep = ""
 
         for thisNote in self:
-                
+
             rep += str(thisNote.fullName) + "\n"
 
         return rep
 
     def add_notes(self):
 
-        self.append(self.first_note)
+        self.append(music21.note.Note(self.scale.getTonic()))
         self.intervals = []
-        good_intervals = [music21.interval.Interval(x) for x in ["m2", "M2", "m3", "M3", "P4", "P5", "P8"]]
-        good_intervals += [x.reverse() for x in good_intervals]
-           
+        notes = [music21.note.Note(str(x)) for x in self.scale.getPitches(self.range[0].pitch.name, self.range[1].pitch.name)]
+
         while not len(self) == self.length:
 
-            previous_note = self[-1]
-            random_interval = random.choice(good_intervals)
-
-            if previous_note.transpose(random_interval).pitch >= self.range[0].pitch and previous_note.transpose(random_interval).pitch <= self.range[1].pitch:
-
-                self.append(previous_note.transpose(random_interval))
-                self.intervals.append(random_interval)
-
+            self.append(music21.note.Note(random.choice(notes).pitch.name))
 
         self.save_midi()
-        
+
     def save_midi(self):
 
         #self.show("midi")
         mf = music21.midi.translate.streamToMidiFile(self)
 
         if not os.path.exists(self.default_save_directory):
-            
+
             os.makedirs(self.default_save_directory)
-        
+
         mf.open(os.path.join(self.default_save_directory, self.name + ".midi"), 'wb')
         mf.write()
         mf.close()
@@ -91,7 +83,7 @@ class Counterpoint_Voice(Voice):
         print("Counterpoint Voice created.")
         super().__init__()
         #the following text is just reference for me when I get to writing this part of the program- credit goes to wikipedia
-        
+
         #spieces
         """
         1. Note against note;
@@ -121,7 +113,7 @@ class Counterpoint_Voice(Voice):
         The interval of a tenth should not be exceeded between two adjacent parts unless by necessity.
         Build from the bass, upward.
         """
-        
+
 class Fugue_Voice(Counterpoint_Voice):
 
     #later this will allow for specific rules for voices intended to be used just for fugues
@@ -130,13 +122,13 @@ class Fugue_Voice(Counterpoint_Voice):
         print("Fugue Voice created.")
         super().__init__()
         if isinstance(subject, Counterpoint_Voice):
-        
+
             self.subject = subject
 
         else:
 
             self.subject = None
-    
+
 class Fugue(Fugue_Voice):
 
     #this is a fugue -- currently does basically nothing
@@ -154,7 +146,7 @@ class Fugue(Fugue_Voice):
         for voice in self.voice_list:
 
             rep += str(voice)
-            
+
         return rep
 
     def counterpoint(self):
@@ -163,8 +155,8 @@ class Fugue(Fugue_Voice):
 
     def create_answer(self, semitones):
 
-        pass
-        
+        print("Answer created.")
+
     def createcountersubject(self):
 
         print("This program can't create a countersubject yet :(")
@@ -173,19 +165,21 @@ class Canon_Voice(Counterpoint_Voice):
     #voice in a canon
     def __init__(self):
 
-        print("Canon Voice created.")        
+        print("Canon Voice created.")
         super().__init__()
 
 class Canon(Canon_Voice):
     #canon
-    def __init__(self):
+    def __init__(self, lead_chords, voice_count):
 
-        print("Canon created.")        
+        self.lead_chords = lead_chords
+        self.voice_count = voice_count
+        print("Canon created.")
         super().__init__()
 
     def gen_rand_chords(self):
 
-        print("Generating random chords for ya'")
+        print("Generating random chords")
 
 class Crab_Canon(Canon):
     #crab canon- as in the crab canon from Bach's musical offering

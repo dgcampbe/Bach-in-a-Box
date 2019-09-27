@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #main module
-
+import music21
 import composition
 #from composition import composition
 from user_interface import interface
 
 def main():
-    
-    test_voice = composition.Voice("test", "D3", 12, "tenor")
+
+    test_voice = composition.Voice("test", music21.scale.MajorScale("D"), 12, "tenor")
     test_voice.add_notes()
     print(str(test_voice))
     test_fugue = composition.Fugue("test_fugue", 4)
