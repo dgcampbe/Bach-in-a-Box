@@ -18,12 +18,9 @@ Pitch_Ranges = {"soprano": ("C4", "A5"),
              "bass": ("E2", "C4")}
 
 for i in Pitch_Ranges: Pitch_Ranges[i] = tuple([music21.note.Note(x) for x in Pitch_Ranges[i]])
-#print(str(Pitch_Ranges))
 
-#Classes
 class Voice(music21.stream.Voice):
-
-    #This creates a Music21 Voice of random notes from a selected scale
+    """Creates a Music21 Voice of random notes from a selected scale."""
     def __init__(self, name = "", scale = music21.scale.MajorScale("C"), length = 12, pitch = "tenor"):
 
         print("Voice created.")
@@ -50,7 +47,7 @@ class Voice(music21.stream.Voice):
 
         return rep
 
-    def add_notes(self):
+    def compose(self):
 
         self.append(music21.note.Note(self.scale.getTonic()))
         self.intervals = []
@@ -76,47 +73,27 @@ class Voice(music21.stream.Voice):
         mf.close()
 
 class Counterpoint_Voice(Voice):
-
-    #later this will allow for specific rules for voices intended to be used for counterpoint
+    """Specific rules for counterpoint"""
     def __init__(self):
 
         print("Counterpoint Voice created.")
         super().__init__()
-        #the following text is just reference for me when I get to writing this part of the program- credit goes to wikipedia
 
-        #spieces
-        """
-        1. Note against note;
-        2. Two notes against one;
-        3. Four notes against one;
-        4. Notes offset against each other (as suspensions);
-        5. All the first four species together, as "florid" counterpoint.
-        """
-        #rules of counterpoint
-        """
-        The following rules apply to melodic writing in each species, for each part:
+class Counterpoint(object):
+    """Counterpoint"""
+    def __init__(self, species, voice_count):
 
-        The final must be approached by step. If the final is approached from below, then the leading tone must be raised in a minor key (Dorian, Hypodorian, Aeolian, Hypoaeolian), but not in Phrygian or Hypophrygian mode. Thus, in the Dorian mode on D, a C♯ is necessary at the cadence.[5]
-        Permitted melodic intervals are the perfect fourth, fifth, and octave, as well as the major and minor second, major and minor third, and ascending minor sixth. The ascending minor sixth must be immediately followed by motion downwards.
-        If writing two skips in the same direction—something that must be only rarely done—the second must be smaller than the first, and the interval between the first and the third note may not be dissonant. The three notes should be from the same triad; if this is impossible, they should not outline more than one octave. In general, do not write more than two skips in the same direction.
-        If writing a skip in one direction, it is best to proceed after the skip with motion in the other direction.
-        The interval of a tritone in three notes should be avoided (for example, an ascending melodic motion F–A–B♮)[citation needed] as is the interval of a seventh in three notes.
-        There must be a climax or high point in the line countering the cantus firmus. This usually occurs somewhere in the middle of exercise and must occur on a strong beat.
-        An outlining of a seventh is avoided within a single line moving in the same direction.
+        self.voice_count = voice_count
+        self.voices= []
 
-        And, in all species, the following rules govern the combination of the parts:
+    def compose(self):
 
-        The counterpoint must begin and end on a perfect consonance.
-        Contrary motion should predominate.
-        Perfect consonances must be approached by oblique or contrary motion.
-        Imperfect consonances may be approached by any type of motion.
-        The interval of a tenth should not be exceeded between two adjacent parts unless by necessity.
-        Build from the bass, upward.
-        """
+        for count in voice_count:
 
-class Fugue_Voice(Counterpoint_Voice):
+            self.voices.append(Counterpoint_Voice().addnotes())
 
-    #later this will allow for specific rules for voices intended to be used just for fugues
+class Fugue_Voice(Counterpoint):
+    """Specific rules for fugues"""
     def __init__(self, subject = None):
 
         print("Fugue Voice created.")
@@ -130,8 +107,7 @@ class Fugue_Voice(Counterpoint_Voice):
             self.subject = None
 
 class Fugue(Fugue_Voice):
-
-    #this is a fugue -- currently does basically nothing
+    """Fugue"""
     def __init__(self, name, voices, subject = None):
 
         print("Fugue created.")
@@ -141,13 +117,7 @@ class Fugue(Fugue_Voice):
 
     def __str__(self):
 
-        rep = "Fugue:"
-
-        for voice in self.voice_list:
-
-            rep += str(voice)
-
-        return rep
+        return self.voice_list
 
     def counterpoint(self):
 
@@ -162,14 +132,14 @@ class Fugue(Fugue_Voice):
         print("This program can't create a countersubject yet :(")
 
 class Canon_Voice(Counterpoint_Voice):
-    #voice in a canon
+    """Specific rules for canons"""
     def __init__(self):
 
         print("Canon Voice created.")
         super().__init__()
 
 class Canon(Canon_Voice):
-    #canon
+    """Canon"""
     def __init__(self, lead_chords, voice_count):
 
         self.lead_chords = lead_chords
@@ -182,7 +152,7 @@ class Canon(Canon_Voice):
         print("Generating random chords")
 
 class Crab_Canon(Canon):
-    #crab canon- as in the crab canon from Bach's musical offering
+    """Crab canon as in the crab canon from Bach's musical offering"""
     def __init__(self):
 
         print("Crab Canon created.")

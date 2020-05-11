@@ -39,7 +39,7 @@ class Interval_Stream(object):
 
     def __init__(self):
 
-        print("IntervalStream created.")
+        print("Interval Stream created.")
         self.intervals = []
         self.starting_frequency = None
         
