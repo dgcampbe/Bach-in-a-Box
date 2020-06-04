@@ -64,3 +64,20 @@ And, in all species, the following rules govern the combination of the parts:
 4. Imperfect consonances may be approached by any type of motion.
 5. The interval of a tenth should not be exceeded between two adjacent parts unless by necessity.
 6. Build from the bass, upward.
+
+Jokes
+The Well Justified Clavier
+Nobody expects the Spanish Intonation
+
+[Canon](https://www.youtube.com/watch?v=OiG_5HcuJnc)
+1. Pick key and number of measures to lead
+2. First note in leader is the tonic
+3. Make catchy theme to lead
+4. Copy lead to second voice, transposed by octave
+5. Harmonize the leader to the copied lead
+6. Thirds, fifths, and sixths are harmonious
+7. Fourths are dissonant
+8. No parallel fifths, avoid unison
+9. Rinse and Repeat
+
+[Maqam](https://www.youtube.com/watch?v=IwS8LfGlCTk)

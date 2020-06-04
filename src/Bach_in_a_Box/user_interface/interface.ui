@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>424</width>
+    <height>161</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,16 +19,16 @@
      <x>20</x>
      <y>10</y>
      <width>256</width>
-     <height>211</height>
+     <height>111</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>250</y>
-     <width>75</width>
+     <x>280</x>
+     <y>100</y>
+     <width>131</width>
      <height>25</height>
     </rect>
    </property>
@@ -41,12 +41,12 @@
     <rect>
      <x>280</x>
      <y>30</y>
-     <width>111</width>
+     <width>131</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Pitch Range</string>
+    <string/>
    </property>
    <property name="checkable">
     <bool>false</bool>
@@ -73,18 +73,18 @@
     <rect>
      <x>280</x>
      <y>10</y>
-     <width>47</width>
-     <height>13</height>
+     <width>131</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Settings</string>
+    <string>Pitch Range</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="radioButton">
    <property name="geometry">
     <rect>
-     <x>280</x>
+     <x>310</x>
      <y>70</y>
      <width>51</width>
      <height>17</height>
@@ -100,7 +100,7 @@
   <widget class="QRadioButton" name="radioButton_2">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>370</x>
      <y>70</y>
      <width>51</width>
      <height>17</height>
@@ -114,8 +114,8 @@
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>90</y>
-     <width>111</width>
+     <y>70</y>
+     <width>21</width>
      <height>20</height>
     </rect>
    </property>
@@ -126,14 +126,50 @@
   <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>250</y>
-     <width>75</width>
-     <height>23</height>
+     <x>280</x>
+     <y>130</y>
+     <width>131</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>Save to File</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>130</y>
+     <width>171</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Filename:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>130</y>
+     <width>21</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>.mid</string>
    </property>
   </widget>
  </widget>

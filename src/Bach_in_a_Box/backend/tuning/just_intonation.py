@@ -4,6 +4,7 @@ import time
 import math
 import sys
 import os
+import pandas as pd
 #allow for the other module to be found
 sys.path.append(os.path.normpath(os.getcwd() + os.sep + os.pardir))
 from playback import playback
@@ -13,8 +14,7 @@ class Interval(object):
     def __init__(self, ratio, direction, length):
 
         print("Interval created.")
-        #instead of using a + or - I will eventually just invert the ratio number
-        if ratio in ratios and direction in ("+", "-") and isinstance(length, int):
+        if not ratios[ratios["Short Name"] == ratio].empty and direction in ("+", "-") and isinstance(length, int):
 
             self.ratio = ratio
             self.direction = direction
@@ -23,14 +23,14 @@ class Interval(object):
         else:
 
             raise Exception("Interval not properly defined.")
-            
+
     def invert(self):
-        
+
         if self.direction == "+":
             self.direction = "-"
         else:
             self.direction = "+"
-    
+
     @property
     def inversion(self):
        return Interval(self.ratio, self.direction, self.length).invert()
@@ -42,7 +42,7 @@ class Interval_Stream(object):
         print("Interval Stream created.")
         self.intervals = []
         self.starting_frequency = None
-        
+
     def add_intervals(self, interval_list):
 
         for i in interval_list:
@@ -56,24 +56,24 @@ class Interval_Stream(object):
         print("Playing starting frequency: " + str(frequency) + " hz.")
         playback.sine_tone(frequency, 1)
         frequencies = [frequency]
-        
+
         for interval in self.intervals:
 
             if interval.direction  == "+":
 
-                frequency = frequency * ratios[interval.ratio]
-                print("Playing up a " + interval.ratio.title() + " to: " + str(frequency) + " hz.")
+                frequency *= eval(ratios[ratios["Short Name"] == interval.ratio]["Ratio"].values[0])
+                print("Playing up a " + interval.ratio + " to: " + str(frequency) + " hz.")
 
             elif interval.direction == "-":
 
-                frequency = frequency / ratios[interval.ratio]
-                print("Playing down a " + interval.ratio.title() + " to: " + str(frequency) + " hz.")
+                frequency /= eval(ratios[ratios["Short Name"] == interval.ratio]["Ratio"].values[0])
+                print("Playing down a " + interval.ratio + " to: " + str(frequency) + " hz.")
 
             playback.sine_tone(frequency, 1)
             frequencies.append(frequency)
 
         return frequencies
-                
+
 def scale(start):
 
     print("Playing scale using invervals based on a single frequency...")
@@ -82,9 +82,9 @@ def scale(start):
     suffixes = ["th", "st", "nd", "rd", ] + ["th"] * 16
     time.sleep(1)
 
-    for ratio in ratios:
+    for ratio in ratios["Short Name"]:
 
-        temp = start * ratios[ratio]
+        temp = start * eval(ratios[ratios["Short Name"] == ratio]["Ratio"].values[0])
         place = str(i + 1) + suffixes[(i + 1) % 100]
         print("Playing the " + place + " frequency, a " + str(ratio) + " at " + str(temp) + " hz.")
         playback.sine_tone(temp, 1)
@@ -94,12 +94,12 @@ def scale(start):
 def comma_proof(starting_frequency):
 
     print("Proving the need for a syntonic comma. Starting at " + str(starting_frequency) + " hz.")
-    interval_list = [("Perfect Fifth", "+", 1), ("Perfect Fourth", "-", 1), ("Perfect Fifth", "+", 1), ("Perfect Fourth", "-", 1),  ("Major Third", "-", 1)]
+    proof = [("P5", "+", 1), ("P4", "-", 1), ("P5", "+", 1), ("P4", "-", 1), ("M3", "-", 1)]
     Intervals = []
 
-    for i in interval_list:
+    for i in proof:
 
-        Intervals.append(Interval(i[0], i[1], i[2]))
+        Intervals.append(Interval(*i))
 
     proof_stream = Interval_Stream()
     proof_stream.add_intervals(Intervals)
@@ -109,7 +109,7 @@ def comma_proof(starting_frequency):
     print("Hear the difference?")
 
     return notes
-    
+
 def comma_sequence(frequency, direction, iterations):
 
     for i in range(iterations):
@@ -124,21 +124,15 @@ def comma_sequence(frequency, direction, iterations):
         elif direction == "down":
 
             frequency /= syntonic_comma
-            
+
 def main():
 
     comma_proof(220.0)
     scale(440.0)
 
-#this data is going to be moved into a pandas dataframe so that the full names and shorter names will both be avalible.
-ratios = {"Perfect Unison": 1/1, "Minor Second": 16/15, "Major Second": 9/8, "Minor Third": 6/5, "Major Third": 5/4, "Perfect Fourth": 4/3,
-          "Augmented Fourth": 45/32, "Diminished Fifth": 64/45, "Perfect Fifth": 3/2, "Minor Sixth": 8/5, "Major Sixth": 5/3, "Minor Seventh": 16/9,
-          "Major Seventh": 15/8, "Perfect Octave": 2/1}
-#ratios = {"P1": 1/1, "m2": 16/15, "M2": 9/8, "m3": 6/5, "M3": 5/4, "P4": 4/3,
-#          "Augmented Fourth": 45/32, "Diminished Fifth": 64/45, "P5": 3/2, "m6": 8/5, "M6": 5/3, "m7": 16/9, "M7": 15/8, "P8": 2/1}
-
+ratios = pd.read_csv("just_intonation.csv")
 syntonic_comma = 1.0125
 
 if __name__ == "__main__":
-    
+
     main()
