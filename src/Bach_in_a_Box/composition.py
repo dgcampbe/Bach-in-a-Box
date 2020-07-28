@@ -1,27 +1,31 @@
 #!/usr/bin/env python
-#composition module
+"""Composition."""
 
 import random
-import os #file writing
-import time
-#import numpy
-#import scipy
-import music21 #Music21 module from MIT
-from backend import playback
+# file writing
+import os
+# import time
+# import numpy
+# import scipy
+import music21
+# from backend import playback
 
-#Default Global Variables
+# Default Global Variables
 Pitch_Ranges = {"soprano": ("C4", "A5"),
-             "mezzo-soprano": ("A3", "F5"),
-             "alto": ("F3", "D5"),
-             "tenor": ("B2", "G4"),
-             "baritone": ("G2", "E4"),
-             "bass": ("E2", "C4")}
+                "mezzo-soprano": ("A3", "F5"),
+                "alto": ("F3", "D5"),
+                "tenor": ("B2", "G4"),
+                "baritone": ("G2", "E4"),
+                "bass": ("E2", "C4")}
 
-for i in Pitch_Ranges: Pitch_Ranges[i] = tuple([music21.note.Note(x) for x in Pitch_Ranges[i]])
+for i in Pitch_Ranges:
+    Pitch_Ranges[i] = tuple([music21.note.Note(x) for x in Pitch_Ranges[i]])
+
 
 class Voice(music21.stream.Voice):
-    """Creates a Music21 Voice of random notes from a selected scale."""
-    def __init__(self, name = "", scale = music21.scale.MajorScale("C"), length = 12, pitch = "tenor"):
+    """Create a Music21 Voice of random notes from a selected scale."""
+
+    def __init__(self, name="", scale=music21.scale.MajorScale("C"), length=12, pitch="tenor"):
 
         print("Voice created.")
         super().__init__()
@@ -35,10 +39,11 @@ class Voice(music21.stream.Voice):
             self.pitch = pitch
             self.range = Pitch_Ranges[self.pitch]
 
-        else: raise
+        else:
+            raise
 
     def __str__(self):
-
+        """String."""
         rep = ""
 
         for thisNote in self:
@@ -48,7 +53,7 @@ class Voice(music21.stream.Voice):
         return rep
 
     def compose(self):
-
+        """Compose."""
         self.append(music21.note.Note(self.scale.getTonic()))
         self.intervals = []
         notes = [music21.note.Note(str(x)) for x in self.scale.getPitches(self.range[0].pitch.name, self.range[1].pitch.name)]
@@ -60,41 +65,48 @@ class Voice(music21.stream.Voice):
         self.save_midi()
 
     def save_midi(self):
-
-        #self.show("midi")
+        """Save to midi."""
+        # self.show("midi")
         mf = music21.midi.translate.streamToMidiFile(self)
 
         if not os.path.exists(self.default_save_directory):
 
             os.makedirs(self.default_save_directory)
 
-        mf.open(os.path.join(self.default_save_directory, self.name + ".midi"), 'wb')
+        mf.open(os.path.join(self.default_save_directory,
+                             self.name + ".midi"), 'wb')
         mf.write()
         mf.close()
 
+
 class Counterpoint_Voice(Voice):
-    """Specific rules for counterpoint"""
+    """Counterpoint voice."""
+
     def __init__(self):
 
         print("Counterpoint Voice created.")
         super().__init__()
 
+
 class Counterpoint(object):
-    """Counterpoint"""
+    """Counterpoint."""
+
     def __init__(self, species, voice_count):
 
         self.voice_count = voice_count
-        self.voices= []
+        self.voices = []
 
     def compose(self):
-
-        for count in voice_count:
+        """Compose."""
+        for count in self.voice_count:
 
             self.voices.append(Counterpoint_Voice().addnotes())
 
+
 class Fugue_Voice(Counterpoint):
-    """Specific rules for fugues"""
-    def __init__(self, subject = None):
+    """Fugue voice."""
+
+    def __init__(self, subject=None):
 
         print("Fugue Voice created.")
         super().__init__()
@@ -106,9 +118,11 @@ class Fugue_Voice(Counterpoint):
 
             self.subject = None
 
+
 class Fugue(Fugue_Voice):
-    """Fugue"""
-    def __init__(self, name, voices, subject = None):
+    """Fugue."""
+
+    def __init__(self, name, voices, subject=None):
 
         print("Fugue created.")
         super().__init__()
@@ -116,30 +130,34 @@ class Fugue(Fugue_Voice):
         self.voice_list = [subject] + [[None] for x in range(voices)]
 
     def __str__(self):
-
+        """String."""
         return self.voice_list
 
     def counterpoint(self):
-
+        """Counterpoint."""
         print("Counterpoint is hard.")
 
     def create_answer(self, semitones):
-
+        """Create answer."""
         print("Answer created.")
 
     def createcountersubject(self):
-
+        """Create countersubject."""
         print("This program can't create a countersubject yet :(")
 
+
 class Canon_Voice(Counterpoint_Voice):
-    """Specific rules for canons"""
+    """Canon voice."""
+
     def __init__(self):
 
         print("Canon Voice created.")
         super().__init__()
 
+
 class Canon(Canon_Voice):
-    """Canon"""
+    """Canon."""
+
     def __init__(self, lead_chords, voice_count):
 
         self.lead_chords = lead_chords
@@ -148,11 +166,13 @@ class Canon(Canon_Voice):
         super().__init__()
 
     def gen_rand_chords(self):
-
+        """Generate random chords."""
         print("Generating random chords")
 
+
 class Crab_Canon(Canon):
-    """Crab canon as in the crab canon from Bach's musical offering"""
+    """Crab canon from Bach's musical offering."""
+
     def __init__(self):
 
         print("Crab Canon created.")
