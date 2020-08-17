@@ -4,10 +4,12 @@
 import random
 # file writing
 import os
+import math
 # import time
 # import numpy
 # import scipy
 import music21
+import mido
 # from backend import playback
 
 # Default Global Variables
@@ -74,7 +76,7 @@ class Voice(music21.stream.Voice):
             os.makedirs(self.default_save_directory)
 
         mf.open(os.path.join(self.default_save_directory,
-                             self.name + ".midi"), 'wb')
+                             self.name + ".mid"), 'wb')
         mf.write()
         mf.close()
 
@@ -176,3 +178,43 @@ class Crab_Canon(Canon):
     def __init__(self):
 
         print("Crab Canon created.")
+
+
+def midi_to_dectalk(midi, mode="phone"):
+    """Convert midi files with monophonic tracks to be sung in dectalk."""
+    # dectalk notes range from C2 to C5 and are numbered 36 less than midi
+    # this function is currently very buggy
+    print("Converting to dectalk.")
+    mf = mido.MidiFile(midi)
+    words = ["uw", "ax", "ow", "ah"]
+    song = []
+    for track in mf.tracks:
+        if mode == "phone":
+            voice = "[:phone on]\n"
+        elif mode == "sing":
+            voice = "[:phoneme arpabet speak on]\n"
+        for note in track:
+            if note.type in ("note_on", "note_off") and note.time != 0:
+                freq = math.floor(music21.pitch.Pitch(note.note).frequency)
+                duration = math.floor(note.time)
+                if mode == "phone":
+                    voice += "[:tone " + str(freq) + "," + str(duration) + "]\n"
+                elif mode == "sing":
+                    voice += "[" + words[0] + "<" + str(freq) + "," + str(note.note - 36) + ">]\n"
+        song.append(voice)
+    for voice_count in range(len(song)):
+        f = open(os.path.join(os.path.split(midi)[0], str(voice_count) + ".txt"), "w")
+        f.write(song[voice_count])
+        f.close()
+    print("Dectalk conversion finished.")
+    return song
+
+
+def main():
+    """Main."""
+    midi_to_dectalk(os.path.join("..", "..", "data", "examples", "The_Art_of_Fugue_Contrapunctus_1.mid"))
+
+
+if __name__ == "__main__":
+
+    main()
