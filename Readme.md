@@ -9,12 +9,12 @@ Requires:
 
 ### Licensing:
 * Code licensed under [GNU Affero GPL v3](https://www.gnu.org/licenses/agpl-3.0.html)
-* Art of Fugue example midi converted from a score by Pikabolt5 [here](https://musescore.com/pikabolt5/the-art-of-fugue-contrapunctus-i) licensed under [Creative Commons Zero](https://creativecommons.org/publicdomain/zero/1.0/).
-* Logo in docs folder made from a public domain painting of Bach and a image by Svengraph [here](https://commons.wikimedia.org/wiki/File:Svengraph_Box.png) licensed under [Creative Commons Attribution 3.0 Unported](https://creativecommons.org/licenses/by/3.0/deed.en)
+* Art of Fugue example midi converted from a [score by Pikabolt](https://musescore.com/pikabolt5/the-art-of-fugue-contrapunctus-i) licensed under [Creative Commons Zero](https://creativecommons.org/publicdomain/zero/1.0/).
+* Logo from gh-pages branch made from a [public domain painting of Bach](https://en.wikipedia.org/wiki/File:Johann_Sebastian_Bach.jpg) and an [image by Svengraph](https://commons.wikimedia.org/wiki/File:Svengraph_Box.png) licensed under [Creative Commons Attribution 3.0 Unported](https://creativecommons.org/licenses/by/3.0/deed.en)
 
 ### Current Features:
 * Generates random midi files
-* Converts midi files to dectalk (inspired by 7coil/midi-to-dectalk)
+* Converts midi files to dectalk (inspired by [7coil/midi-to-dectalk](https://github.com/7coil/midi-to-dectalk))
 
 ### Planned Features:
 * UI in PyQt5

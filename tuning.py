@@ -2,14 +2,11 @@
 """A library for dealing with many tuning systems including just intonation."""
 # import time
 # import math
-import sys
-import os
 # import numpy as np
 # import music21
 # import sympy
 # import pandas as pd
-sys.path.append(os.path.normpath(os.getcwd() + os.sep + os.pardir))
-from playback import playback
+import playback
 
 
 class Equal_Tempermant(object):
@@ -70,15 +67,12 @@ class Stream(object):
         print("Playing starting frequency: " + str(self.frequency) + " hz.")
         playback.sine_tone(self.frequency, 1)
         frequencies = [self.frequency]
-
         for interval in self.intervals:
-
             self.frequency *= interval
             print("Playing a " + str(interval)
                   + " to: " + str(self.frequency) + " hz.")
             playback.sine_tone(self.frequency, 1)
             frequencies.append(self.frequency)
-
         return frequencies
 
 
@@ -99,10 +93,12 @@ def comma_pump(frequency):
 
 def main():
     """Main."""
-    # just_intonation = pd.read_csv("just_intonation.csv")
-    # alpha_scale = pd.read_csv("alpha_scale.csv")
-    # beta_scale = pd.read_csv("beta_scale.csv")
-    # gamma_scale = pd.read_csv("gamma_scale.csv")
+    # tunings = "tunings"
+    # just_intonation = pd.read_csv(os.path.join(tunings,
+    # "just_intonation.csv"))
+    # alpha_scale = pd.read_csv(os.path.join(tunings, "alpha_scale.csv"))
+    # beta_scale = pd.read_csv(os.path.join(tunings, "beta_scale.csv"))
+    # gamma_scale = pd.read_csv(os.path.join(tunings, "gamma_scale.csv"))
     # syntonic_comma = 1.0125
     comma_pump(220.0)
 

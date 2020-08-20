@@ -1,0 +1,8 @@
+{
+"soprano": (music21.note.Note("C4"), music21.note.Note("A5")),
+"mezzo-soprano": (music21.note.Note("A3"), music21.note.Note("F5")),
+"alto": (music21.note.Note("F3"), music21.note.Note("D5")),
+"tenor": (music21.note.Note("B2"), music21.note.Note("G4")),
+"baritone": (music21.note.Note("G2"), music21.note.Note("E4")),
+"bass": (music21.note.Note("E2"), music21.note.Note("C4"))
+}
