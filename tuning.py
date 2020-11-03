@@ -96,9 +96,9 @@ def main():
     # tunings = "tunings"
     # just_intonation = pd.read_csv(os.path.join(tunings,
     # "just_intonation.csv"))
-    # alpha_scale = pd.read_csv(os.path.join(tunings, "alpha_scale.csv"))
-    # beta_scale = pd.read_csv(os.path.join(tunings, "beta_scale.csv"))
-    # gamma_scale = pd.read_csv(os.path.join(tunings, "gamma_scale.csv"))
+    # alpha_scale = pd.read_csv(os.path.join(tunings, "alpha.csv"))
+    # beta_scale = pd.read_csv(os.path.join(tunings, "beta.csv"))
+    # gamma_scale = pd.read_csv(os.path.join(tunings, "gamma.csv"))
     # syntonic_comma = 1.0125
     comma_pump(220.0)
 

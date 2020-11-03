@@ -1,0 +1,7 @@
+{
+"Name":"Beta",
+"Creator":"Wendy Carlos",
+"Type":"",
+"LaTeX Step Expression":"{\displaystyle {\frac {11\log _{2}{(3/2)}+6\log _{2}{(5/4)}+5\log _{2}{(6/5)}}{11^{2}+6^{2}+5^{2}}}}",
+"Step Expression":"(5*log(6/5, 2) + 6*log(5/4, 2) + 11*log(3/2, 2))/(5**2 + 6**2 + 11**2)"
+}
