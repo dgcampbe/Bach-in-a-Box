@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(
-    name="",
+    name="Bach-in-a-Box",
     version="0.1",
-    description="",
-    packages=["music21", "PyQt5", "Mido"],
+    description="A Python program to generate music and tuning systems.",
+    packages=["music21", "PySide6", "Mido", "numpy", "scipy","pygame"],
     author="Dane Campbell",
     author_email="dgcampbe@gmail.com",
     keywords="",

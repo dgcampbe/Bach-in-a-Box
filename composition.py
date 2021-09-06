@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 """Composition."""
-
 import random
-# file writing
 import os
 import math
-# import time
-# import numpy
-# import scipy
 import music21
 import mido
-# import playback
 
 # Default Global Variables
 ranges = open("ranges.json")
@@ -38,19 +32,18 @@ class Voice(music21.stream.Voice):
 
     def __str__(self):
         """String."""
-        rep = ""
-        for note in self:
-            rep += str(note.fullName) + "\n"
-        return rep
+        return "".join(str(note.fullName) + "\n" for note in self)
 
     def compose(self):
         """Compose."""
         self.append(music21.note.Note(self.scale.getTonic()))
-        notes = []
-        for note in self.scale.getPitches(self.range[0].pitch.name,
-                                          self.range[1].pitch.name):
-            notes.append(music21.note.Note(str(note)))
-        while not len(self) == self.length:
+        notes = [
+            music21.note.Note(str(note))
+            for note in self.scale.getPitches(
+                self.range[0].pitch.name, self.range[1].pitch.name
+            )
+        ]
+        while len(self) != self.length:
             self.append(music21.note.Note(random.choice(notes).pitch.name))
         self.save_midi()
 
@@ -66,7 +59,7 @@ class Voice(music21.stream.Voice):
         midi_file.close()
 
 
-class Fugue():
+class Fugue:
     """Fugue."""
 
     def __init__(self, name, voices, subject=None):
@@ -74,26 +67,22 @@ class Fugue():
         print("Fugue created.")
         super().__init__()
         self.name = name
-        self.voice_list = [subject] + [[None] for i in range(voices)]
+        self.voice_list = [subject] + [[None], * len(voices)]
 
     def __str__(self):
         """String."""
         return self.voice_list
 
-    def counterpoint(self):
-        """Counterpoint."""
-        print("Counterpoint is hard.")
-
-    def create_answer(self):
-        """Create answer."""
+    def generate_answer(self):
+        """Generate answer."""
         print("Answer created.")
 
-    def createcountersubject(self):
-        """Create countersubject."""
+    def generate_countersubject(self):
+        """Generate countersubject."""
         print("This program can't create a countersubject yet :(")
 
 
-class Canon():
+class Canon:
     """Canon."""
 
     def __init__(self, lead_chords, voice_count):
@@ -103,12 +92,12 @@ class Canon():
         print("Canon created.")
         super().__init__()
 
-    def gen_rand_chords(self):
+    def generate_random_chords(self):
         """Generate random chords."""
         print("Generating random chords")
 
 
-class CrabCanon():
+class CrabCanon:
     """Crab canon from Bach's musical offering."""
 
     def __init__(self):
@@ -141,10 +130,9 @@ def midi_to_dectalk(midi, mode="phone"):
                              + "," + str(note.note - 36) + ">]\n"
         song.append(voice)
     for i, j in enumerate(song):
-        track = open(os.path.join(os.path.split(midi)[0], str(i) + ".txt"),
-                     "w")
-        track.write(j)
-        track.close()
+        with open(os.path.join(os.path.split(midi)[0], str(i) + ".txt"),
+                  "w") as track:
+            track.write(j)
     print("Dectalk conversion finished.")
     return song
 

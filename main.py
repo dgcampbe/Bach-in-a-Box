@@ -2,19 +2,35 @@
 """Main."""
 import music21
 import composition
-# from composition import composition
-# from user_interface import interface
+import sys
+from PySide6.QtWidgets import QApplication, QMainWindow
+# from PySide6.QtCore import QFile
+import interface
+
+
+class MainWindow(QMainWindow):
+    """Main window."""
+
+    def __init__(self):
+
+        super(MainWindow, self).__init__()
+        self.ui = interface.Ui_window()
+        self.ui.setupUi(self)
 
 
 def main():
     """Main."""
-    test_voice = composition.Voice("test", music21.scale.MajorScale("D"),
-                                   12, "tenor")
-    test_voice.compose()
-    print(str(test_voice))
+    voice = composition.Voice("test", music21.scale.MajorScale("D"),
+                              12, "tenor")
+    voice.compose()
+    print(str(voice))
     # Run interface
-    input("Press enter to exit.")
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
 
 
-# Run main
-main()
+if __name__ == "__main__":
+
+    main()

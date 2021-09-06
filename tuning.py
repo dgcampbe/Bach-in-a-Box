@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 """A library for dealing with many tuning systems including just intonation."""
-# import time
-# import math
-# import numpy as np
-# import music21
-# import sympy
-# import pandas as pd
+import sympy
 import playback
 
 
-class Equal_Tempermant(object):
-    """Process any equal temperment, not just 12TET."""
+class EqualTemperament:
+    """
+    Process any equal temperament, not just 12TET, given a step size in cents.
+
+    The equal temperament need not be octave repeating.
+    """
 
     def __init__(self, step_size):
 
-        print("Equal tempermant system initialized.")
+        print("Equal temperament system initialized.")
         self.step_size = step_size
 
     def set_tonic_frequency(self, frequency):
@@ -22,32 +21,34 @@ class Equal_Tempermant(object):
         self.frequency = frequency
 
 
-class Just_Intonation(object):
-    """Process just intonation of any limit."""
+class JustIntonation:
+    """Process just intonation of any prime limit."""
 
     def __init__(self, limit):
 
         print("Just intonation system initialized.")
         self.limit = limit
+        self.primes = list(sympy.sieve.primerange(1, self.limit))
 
     def set_tonic_frequency(self, frequency):
         """Set tonic frequency."""
         self.frequency = frequency
 
 
-class Arbitrary_Tuning(object):
-    """Process arbitrary tuning given ratios."""
+class ArbitraryTuning:
+    """Process any arbitrary tuning given a list of ratios."""
 
-    def __init__(self):
+    def __init__(self, ratios):
 
         print("Arbitrary tuning system initialized.")
+        self.ratios = ratios
 
     def set_tonic_frequency(self, frequency):
         """Set tonic frequency."""
         self.frequency = frequency
 
 
-class Stream(object):
+class Stream:
     """Output audio."""
 
     def __init__(self):
@@ -65,13 +66,13 @@ class Stream(object):
         # below line will be removed.
         self.frequency = 220.0
         print("Playing starting frequency: " + str(self.frequency) + " hz.")
-        playback.sine_tone(self.frequency, 1)
+        playback.play(playback.sine_wave(self.frequency, 4096), 1000)
         frequencies = [self.frequency]
         for interval in self.intervals:
             self.frequency *= interval
             print("Playing a " + str(interval)
                   + " to: " + str(self.frequency) + " hz.")
-            playback.sine_tone(self.frequency, 1)
+            playback.play(playback.sine_wave(self.frequency, 4096), 1000)
             frequencies.append(self.frequency)
         return frequencies
 
@@ -86,19 +87,21 @@ def comma_pump(frequency):
     notes = stream.play()
     print("Playing starting note: " + str(frequency)
           + " hz, again for comparison.")
-    playback.sine_tone(frequency, 1)
+    playback.play(playback.sine_wave(frequency, 4096), 1000)
     print("Hear the difference?")
     return notes
 
 
 def main():
     """Main."""
-    # tunings = "tunings"
-    # just_intonation = pd.read_csv(os.path.join(tunings,
-    # "just_intonation.csv"))
-    # alpha_scale = pd.read_csv(os.path.join(tunings, "alpha.csv"))
-    # beta_scale = pd.read_csv(os.path.join(tunings, "beta.csv"))
-    # gamma_scale = pd.read_csv(os.path.join(tunings, "gamma.csv"))
+    """
+    alpha_scale = pd.read_csv(os.path.join("tunings", "equal temperaments",
+                                           "alpha.csv"))
+    beta_scale = pd.read_csv(os.path.join("tunings", "equal temperaments",
+                                          "beta.csv"))
+    gamma_scale = pd.read_csv(os.path.join("tunings", "equal temperaments",
+                                           "gamma.csv"))
+    """
     # syntonic_comma = 1.0125
     comma_pump(220.0)
 
