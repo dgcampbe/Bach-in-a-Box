@@ -1,4 +1,4 @@
-music21~=5.7.2
+music21~=9.1.0
 pyside6~=6.0.2
 setuptools~=52.0.0
 sympy~=1.8
