@@ -1,6 +1,6 @@
 music21~=9.1.0
 pyside6~=6.6.0
-setuptools~=68.2.2
+setuptools~=69.0.3
 sympy~=1.12
 pygame~=2.5.2
 numpy~=1.26.1
